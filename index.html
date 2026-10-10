@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FORCEWIN Validation</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#f2f5f9;color:#1e293b}
+header{background:#123b65;color:white;padding:22px 8%;font-size:23px;font-weight:bold}
+main{max-width:430px;margin:90px auto;background:white;padding:36px;border-radius:12px;box-shadow:0 8px 28px #0001}
+h1{text-align:center;font-size:25px;margin:0 0 12px}
+p{text-align:center;color:#64748b;margin-bottom:30px}
+label{display:block;margin:16px 0 7px;font-weight:bold;font-size:14px}
+input{width:100%;padding:13px;border:1px solid #cbd5e1;border-radius:6px;font-size:15px}
+button{width:100%;margin-top:25px;padding:14px;background:#1565a9;border:0;border-radius:6px;color:white;font-size:16px;cursor:pointer}
+button:hover{background:#104b80}
+footer{text-align:center;margin-top:35px;color:#94a3b8;font-size:13px}
+</style>
+</head>
+<body>
+<header>FORCEWIN Validation</header>
+<main>
+<h1>Welcome Back</h1>
+<p>Sign in to your validation portal</p>
+<form id="loginForm">
+<label>Email Address</label>
+<input type="email" id="email" placeholder="Enter your email" required>
+<label>Password</label>
+<input type="password" id="password" placeholder="Enter your password" required>
+<button type="submit">Sign In</button>
+</form>
+</main>
+<footer>© 2026 FORCEWIN Validation</footer>
+<script>
+document.getElementById('loginForm').addEventListener('submit',function(e){
+e.preventDefault();
+alert('Login page created successfully. Supabase authentication will be connected next.');
+});
+</script>
+</body>
+</html>
