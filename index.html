@@ -32,10 +32,22 @@ footer{text-align:center;margin-top:35px;color:#94a3b8;font-size:13px}
 </form>
 </main>
 <footer>© 2026 FORCEWIN Validation</footer>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-document.getElementById('loginForm').addEventListener('submit',function(e){
-e.preventDefault();
-alert('Login page created successfully. Supabase authentication will be connected next.');
+const SUPABASE_URL = "https://rexofhwumcrszzipkuyf.supabase.co";
+const SUPABASE_KEY = "sb_publishable_G7rcvMt6K-uYGee-8HkeqQ_Zpcml2e5";
+const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+document.getElementById("loginForm").addEventListener("submit", async function(e) {
+  e.preventDefault();
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+  const { error } = await db.auth.signInWithPassword({ email, password });
+  if (error) {
+    alert("登录失败：" + error.message);
+    return;
+  }
+  alert("登录成功！下一步连接工单管理页面。");
 });
 </script>
 </body>
