@@ -1,54 +1,37 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>FORCEWIN Validation</title>
 <style>
-*{box-sizing:border-box}
-body{margin:0;font-family:Arial,sans-serif;background:#f2f5f9;color:#1e293b}
-header{background:#123b65;color:white;padding:22px 8%;font-size:23px;font-weight:bold}
-main{max-width:430px;margin:90px auto;background:white;padding:36px;border-radius:12px;box-shadow:0 8px 28px #0001}
-h1{text-align:center;font-size:25px;margin:0 0 12px}
-p{text-align:center;color:#64748b;margin-bottom:30px}
-label{display:block;margin:16px 0 7px;font-weight:bold;font-size:14px}
-input{width:100%;padding:13px;border:1px solid #cbd5e1;border-radius:6px;font-size:15px}
-button{width:100%;margin-top:25px;padding:14px;background:#1565a9;border:0;border-radius:6px;color:white;font-size:16px;cursor:pointer}
-button:hover{background:#104b80}
-footer{text-align:center;margin-top:35px;color:#94a3b8;font-size:13px}
+:root{font-family:Arial,'Microsoft YaHei',sans-serif;color:#e6edf7;background:#090e18}*{box-sizing:border-box}body{margin:0}button,input,select,textarea{font:inherit}button{cursor:pointer;border:0;border-radius:7px;padding:11px 15px;background:#1769c2;color:white}button:disabled{opacity:.55;cursor:wait}.secondary{background:#25354c}.danger{background:#a43d4c}header{background:#101a2b;border-bottom:1px solid #263850;padding:18px 5%;display:flex;justify-content:space-between;align-items:center;gap:10px}header strong{font-size:22px}main{max-width:1180px;margin:32px auto;padding:0 18px}.panel{background:#121e30;border:1px solid #2a3c54;border-radius:12px;padding:22px;margin-bottom:20px}.login{max-width:440px;margin:10vh auto}h1,h2{margin:0 0 20px}h1{font-size:26px}h2{font-size:19px}label{display:block;margin:12px 0 6px;color:#bac9df;font-size:14px}input,select,textarea{width:100%;padding:12px;border:1px solid #40516a;border-radius:7px;background:#0b1422;color:#fff}textarea{min-height:110px}form button{margin-top:16px}.muted{color:#a9bad1}.hidden{display:none!important}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}.stat{background:#15253a;padding:20px;border-radius:10px}.stat b{display:block;font-size:30px;margin-top:9px}.toolbar{display:flex;gap:10px;align-items:center;margin-bottom:15px}.toolbar input{flex:1}.tablewrap{overflow:auto}table{width:100%;border-collapse:collapse;min-width:760px}th,td{text-align:left;padding:13px;border-bottom:1px solid #2b3b50}th{color:#aabbd0}tr:hover td{background:#18283e}.small{padding:7px 10px;font-size:13px}.actions{display:flex;gap:7px}.notice{margin:12px 0;color:#eebd6d}.error{color:#ff8d9c}.ok{color:#87d9ae}.formgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:0 14px}.full{grid-column:1/-1}dialog{background:#121e30;color:#e6edf7;border:1px solid #40516a;border-radius:12px;width:min(650px,94vw);max-height:90vh;overflow:auto;padding:25px}dialog::backdrop{background:#000a}.dialogactions{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}@media(max-width:700px){.stats{grid-template-columns:repeat(2,1fr)}.formgrid{grid-template-columns:1fr}.toolbar{flex-wrap:wrap}header strong{font-size:17px}}
 </style>
 </head>
 <body>
-<header>FORCEWIN Validation</header>
+<header><strong>FORCEWIN Validation</strong><div id="userbar" class="hidden"><span id="who" class="muted"></span> <button id="logout" class="secondary">退出登录</button></div></header>
 <main>
-<h1>Welcome Back</h1>
-<p>Sign in to your validation portal</p>
-<form id="loginForm">
-<label>Email Address</label>
-<input type="email" id="email" placeholder="Enter your email" required>
-<label>Password</label>
-<input type="password" id="password" placeholder="Enter your password" required>
-<button type="submit">Sign In</button>
-</form>
+<section id="login" class="panel login"><h1>欢迎回来</h1><p class="muted">请使用员工账号登录</p><form id="loginForm"><label>电子邮箱</label><input id="email" type="email" required autocomplete="username"><label>密码</label><input id="password" type="password" required autocomplete="current-password"><button id="loginBtn" type="submit">登录</button></form><p id="loginMessage" class="notice" role="status"></p></section>
+<section id="dashboard" class="hidden"><h1>Validation Dashboard</h1><p class="muted">工单管理 · Supabase 数据库</p><div class="stats"><div class="stat">总工单<b id="total">0</b></div><div class="stat">待处理<b id="pending">0</b></div><div class="stat">处理中<b id="progress">0</b></div><div class="stat">已完成<b id="completed">0</b></div></div><div class="panel"><div class="toolbar"><input id="search" placeholder="搜索工单号码、标题、负责人..."><button id="refresh" class="secondary">刷新</button><button id="add">+ 新增工单</button></div><p id="message" class="notice" role="status"></p><div class="tablewrap"><table><thead><tr><th>工单号</th><th>标题</th><th>区域</th><th>分类</th><th>负责人</th><th>状态</th><th>操作</th></tr></thead><tbody id="rows"></tbody></table></div></div></section>
 </main>
-<footer>© 2026 FORCEWIN Validation</footer>
+<dialog id="editor"><h2 id="editorTitle">新增工单</h2><form id="ticketForm"><div class="formgrid"><div><label>工单号 *</label><input id="ticket_no" required maxlength="80"></div><div><label>标题 *</label><input id="title" required></div><div><label>区域</label><input id="block_name" value="MFAB"></div><div><label>分类</label><input id="category" value="Validation"></div><div><label>负责人</label><input id="owner"></div><div><label>状态</label><select id="status"><option>待处理</option><option selected>处理中</option><option>已完成</option><option>暂停</option></select></div><div class="full"><label>详细内容</label><textarea id="details"></textarea></div></div><p id="formMessage" class="error" role="status"></p><div class="dialogactions"><button type="button" id="cancel" class="secondary">取消</button><button type="submit" id="saveTicket">保存工单</button></div></form></dialog>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-const SUPABASE_URL = "https://rexofhwumcrszzipkuyf.supabase.co";
-const SUPABASE_KEY = "sb_publishable_G7rcvMt6K-uYGee-8HkeqQ_Zpcml2e5";
-const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-document.getElementById("loginForm").addEventListener("submit", async function(e) {
-  e.preventDefault();
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
-  const { error } = await db.auth.signInWithPassword({ email, password });
-  if (error) {
-    alert("登录失败：" + error.message);
-    return;
-  }
-  alert("登录成功！下一步连接工单管理页面。");
-});
+const SUPABASE_URL = 'https://rexofhwumcrszzipkuyf.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_G7rcvMt6K-uYGee-8HkeqQ_Zpcml2e5';
+const $ = id => document.getElementById(id);
+const db = window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+let user=null, role='viewer', tickets=[], editingId=null, channel=null;
+function showMessage(id,text,isError=false){$(id).textContent=text;$(id).className=isError?'notice error':'notice';}
+function render(){const q=$('search').value.toLowerCase().trim();const filtered=tickets.filter(t=>[t.ticket_no,t.title,t.owner,t.block_name,t.category,t.status].some(v=>String(v??'').toLowerCase().includes(q)));$('total').textContent=tickets.length;$('pending').textContent=tickets.filter(t=>t.status==='待处理').length;$('progress').textContent=tickets.filter(t=>t.status==='处理中').length;$('completed').textContent=tickets.filter(t=>t.status==='已完成').length;const tbody=$('rows');tbody.replaceChildren();for(const t of filtered){const tr=document.createElement('tr');for(const field of ['ticket_no','title','block_name','category','owner','status']){const td=document.createElement('td');td.textContent=t[field]??'';tr.append(td);}const td=document.createElement('td');if(['admin','editor'].includes(role)){const btn=document.createElement('button');btn.className='small secondary';btn.textContent='编辑';btn.addEventListener('click',()=>openEditor(t));td.append(btn);}tr.append(td);tbody.append(tr);}if(!filtered.length){const tr=document.createElement('tr');const td=document.createElement('td');td.colSpan=7;td.textContent='暂无工单';tr.append(td);tbody.append(tr);}}
+async function loadTickets(){const {data,error}=await db.from('work_orders').select('id,ticket_no,title,block_name,category,owner,status,details,created_at').order('created_at',{ascending:false});if(error){showMessage('message','读取工单失败：'+error.message,true);return;}tickets=data||[];showMessage('message','');render();}
+async function openDashboard(sessionUser){user=sessionUser;$('login').classList.add('hidden');$('dashboard').classList.remove('hidden');$('userbar').classList.remove('hidden');$('who').textContent=user.email;const {data,error}=await db.from('profiles').select('role,active').eq('id',user.id).single();if(error||!data?.active){showMessage('message','账号未启用或没有 profiles 权限，请联系管理员。',true);role='viewer';$('add').classList.add('hidden');return;}role=data.role;$('add').classList.toggle('hidden',!['admin','editor'].includes(role));await loadTickets();if(channel)await db.removeChannel(channel);channel=db.channel('forcewin-work-orders').on('postgres_changes',{event:'*',schema:'public',table:'work_orders'},()=>loadTickets()).subscribe();}
+$('loginForm').addEventListener('submit',async e=>{e.preventDefault();$('loginBtn').disabled=true;showMessage('loginMessage','正在登录...');const {data,error}=await db.auth.signInWithPassword({email:$('email').value.trim(),password:$('password').value});$('loginBtn').disabled=false;if(error){showMessage('loginMessage','登录失败：'+error.message,true);return;}await openDashboard(data.user);});
+$('logout').addEventListener('click',async()=>{if(channel){await db.removeChannel(channel);channel=null;}await db.auth.signOut();user=null;tickets=[];$('dashboard').classList.add('hidden');$('userbar').classList.add('hidden');$('login').classList.remove('hidden');$('password').value='';});
+$('search').addEventListener('input',render);$('refresh').addEventListener('click',loadTickets);
+function openEditor(t=null){editingId=t?.id??null;$('editorTitle').textContent=t?'编辑工单':'新增工单';$('ticketForm').reset();for(const id of ['ticket_no','title','block_name','category','owner','status','details']){if(t)$(id).value=t[id]??'';}if(!t){$('block_name').value='MFAB';$('category').value='Validation';$('status').value='处理中';}$('formMessage').textContent='';$('editor').showModal();}
+$('add').addEventListener('click',()=>openEditor());$('cancel').addEventListener('click',()=>$('editor').close());
+$('ticketForm').addEventListener('submit',async e=>{e.preventDefault();if(!['admin','editor'].includes(role))return;const payload={};for(const id of ['ticket_no','title','block_name','category','owner','status','details'])payload[id]=$(id).value.trim();$('saveTicket').disabled=true;const result=editingId?await db.from('work_orders').update(payload).eq('id',editingId):await db.from('work_orders').insert({...payload,created_by:user.id});$('saveTicket').disabled=false;if(result.error){$('formMessage').textContent='保存失败：'+result.error.message;return;}$('editor').close();await loadTickets();});
+(async()=>{if(SUPABASE_KEY.startsWith('PASTE_')){showMessage('loginMessage','请先在代码中填写 Supabase Publishable Key。',true);return;}const {data}=await db.auth.getUser();if(data.user)await openDashboard(data.user);})();
 </script>
 </body>
 </html>
