@@ -50,12 +50,22 @@ tr:hover td{background:#34294c}
 .error{color:#ff9fb8}
 #blockDetail::backdrop,#editor::backdrop{background:#080512bd}
 </style>
+<style id="excel-report-style">
+.report-viewer{margin-top:22px;border:1px solid #57437b;border-radius:12px;overflow:hidden;background:#211932}.report-top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding:14px 16px;background:#302344}.report-top h2{margin:0;font-size:17px}.report-top small{color:#cdbbe8}.report-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(125px,1fr));gap:9px;padding:13px;background:#20182e}.report-stat{border-radius:8px;padding:12px;background:#3b2b55;border-top:3px solid #9c74ef}.report-stat span{display:block;color:#e2d5f7;font-size:11px;font-weight:700}.report-stat strong{display:block;font-size:24px;margin-top:6px;color:#fff}.report-grid{overflow:auto;max-height:520px;background:#f7f7fa;color:#17233b;border-top:1px solid #6b5987}.report-grid table{border-collapse:separate;border-spacing:0;min-width:max-content;width:100%;font-size:12px;color:#17233b}.report-grid th,.report-grid td{border-right:1px solid #d7dce4;border-bottom:1px solid #d7dce4;padding:7px 10px;white-space:nowrap;max-width:360px;overflow:hidden;text-overflow:ellipsis}.report-grid thead th{position:sticky;top:0;z-index:2;background:#193558;color:#fff;text-align:left}.report-grid tbody tr:nth-child(even){background:#edf0f6}.report-grid tbody tr:hover{background:#e5d9ff}.report-tabs{display:flex;gap:5px;overflow:auto;padding:10px 12px;background:#2a1e40}.report-tabs button{background:#3d2e59;border:1px solid #634d89;color:#eaddff;white-space:nowrap;font-size:12px;padding:8px 12px}.report-tabs button.active{background:#9264e9;color:white}.report-foot{padding:9px 13px;font-size:12px;color:#cdbbe8}.report-summary{padding:12px 15px;background:#261d39}.report-summary h3{margin:4px 0 12px}.report-summary .report-stats{padding:0;background:transparent}.report-hidden{display:none!important}
+</style>
+<style id="connection-list-style">
+#connectionListPreview{margin:12px 0;max-height:440px;overflow:auto;border:1px solid #584471;border-radius:9px}
+#connectionListPreview table{width:max-content;min-width:100%;border-collapse:collapse;font-size:12px}
+#connectionListPreview th{position:sticky;top:0;background:#382650;color:#fff;z-index:1;white-space:nowrap}
+#connectionListPreview td{white-space:nowrap;max-width:340px;overflow:hidden;text-overflow:ellipsis}
+#connectionListStatus{padding:8px 0}
+</style>
 </head>
 <body>
 <header><strong>FORCEWIN Validation</strong><div id="userbar" class="hidden"><span id="who" class="muted"></span> <button id="logout" class="secondary">Log Out</button></div></header>
 <main>
 <section id="login" class="panel login"><h1>Welcome Back</h1><p class="muted">Sign in with your employee account</p><form id="loginForm"><label>Email Address</label><input id="email" type="email" required autocomplete="username"><label>Password</label><input id="password" type="password" required autocomplete="current-password"><button id="loginBtn" type="submit">Sign In</button></form><p id="loginMessage" class="notice" role="status"></p></section>
-<section id="dashboard" class="hidden"><nav class="tabs"><button class="tab selected" data-page="dashboard">Dashboard</button><button class="tab" data-page="checklist">Checklist</button><button class="tab" data-page="formatter">Formatter</button></nav><nav class="tabs" id="areas"><button class="area" data-area="CFAB/MFAB">CFAB/MFAB</button><button class="area selected" data-area="QFAB T0-T1">QFAB T0-T1</button><button class="area" data-area="T0-HOPS">T0-HOPS</button></nav><section id="dashboardPage"><p class="eyebrow">FORCEWIN · VALIDATION</p><h1 id="areaTitle">CFAB/MFAB · Validations Status</h1><div class="metricgrid"><div class="metric">BLOCKS<b id="blocksCount">0</b></div><div class="metric">OPEN ISSUES<b id="openCount">0</b></div><div class="metric">LLDP<b id="lldpCount">—</b></div><div class="metric">INTERFACE DOWN<b id="interfaceCount">—</b></div><div class="metric">OPTICS<b id="opticsCount">—</b></div><div class="metric">IN PROGRESS<b id="progress">0</b></div><div class="metric">CLEARED<b id="completed">0</b></div><div class="metric">IN SERVICE<b id="serviceCount">—</b></div></div><div class="toolbar"><input id="search" placeholder="Filter by BLOCK number or status..."><button id="refresh" class="secondary">Refresh</button><button id="add">+ New Work Order</button></div><p id="message" class="notice" role="status"></p><div id="blockCards" class="blockgrid"></div><div id="rackTools" class="panel hidden"><h2>Rack Management</h2><p class="muted">Administrators can add or deactivate racks. Deactivation preserves historical data.</p><div class="toolbar"><select id="rackDG"><option>DG1</option><option>DG2</option><option>DG3</option><option>DG4</option><option>DG5</option><option>DG6</option></select><input id="rackNumber" placeholder="Rack Number, e.g. 0616" maxlength="40"><button id="addRack">Add Rack</button></div><p id="rackMessage" class="notice"></p></div><div class="panel"><h2>Work Orders</h2><div class="tablewrap"><table><thead><tr><th>Ticket No.</th><th>Title</th><th>Area</th><th>Category</th><th>Owner</th><th>Status</th><th>Actions</th></tr></thead><tbody id="rows"></tbody></table></div></div></section><section id="checklistPage" class="hidden panel"><h1>Checklist</h1><p class="muted">Select a block on the Dashboard to view its work orders. Checklist templates will be configured later.</p></section><section id="formatterPage" class="hidden panel"><h1>Formatter</h1><p class="eyebrow">UPLOAD · VALIDATION DATA</p><div class="uploadbox"><label for="formatFile">Select QFAB T0-T1 Validation Excel (.xlsx) or CSV (.csv)</label><input type="file" id="formatFile" accept=".xlsx,.xls,.csv"><p class="muted">Match against QFAB T0-T1 DG / Rack assignments. T0 uses Source / Device A. T1 uses Source first, then Remote / Expected if unmatched. Racks absent from the report will not be reset to zero.</p><p id="formatResult" class="muted">No file selected</p><div class="format-actions"><button id="commitFormat" disabled>Confirm & Save to Supabase</button><button class="secondary" id="clearPreview">Clear Preview</button></div><div id="formatPreview" class="tablewrap"></div></div></section></section>
+<section id="dashboard" class="hidden"><nav class="tabs"><button class="tab selected" data-page="dashboard">Dashboard</button><button class="tab" data-page="checklist">Checklist</button><button class="tab" data-page="formatter">Formatter</button></nav><nav class="tabs" id="areas"><button class="area" data-area="CFAB/MFAB">CFAB/MFAB</button><button class="area selected" data-area="QFAD">QFAB T0-T1</button><button class="area" data-area="T0-HOPS">T0-HOPS</button></nav><section id="dashboardPage"><p class="eyebrow">FORCEWIN · VALIDATION</p><h1 id="areaTitle">CFAB/MFAB · Validations Status</h1><div class="metricgrid"><div class="metric">BLOCKS<b id="blocksCount">0</b></div><div class="metric">OPEN ISSUES<b id="openCount">0</b></div><div class="metric">LLDP<b id="lldpCount">—</b></div><div class="metric">INTERFACE DOWN<b id="interfaceCount">—</b></div><div class="metric">OPTICS<b id="opticsCount">—</b></div><div class="metric">IN PROGRESS<b id="progress">0</b></div><div class="metric">CLEARED<b id="completed">0</b></div><div class="metric">IN SERVICE<b id="serviceCount">—</b></div></div><div class="toolbar"><input id="search" placeholder="Filter by BLOCK number or status..."><button id="refresh" class="secondary">Refresh</button><button id="add">+ New Work Order</button></div><p id="message" class="notice" role="status"></p><div id="blockCards" class="blockgrid"></div><div id="rackTools" class="panel hidden"><h2>Rack Management</h2><p class="muted">Administrators can add or deactivate racks. Deactivation preserves historical data.</p><div class="toolbar"><select id="rackDG"><option>DG1</option><option>DG2</option><option>DG3</option><option>DG4</option><option>DG5</option><option>DG6</option></select><input id="rackNumber" placeholder="Rack Number, e.g. 0616" maxlength="40"><button id="addRack">Add Rack</button></div><p id="rackMessage" class="notice"></p></div><div class="panel"><h2>Work Orders</h2><div class="tablewrap"><table><thead><tr><th>Ticket No.</th><th>Title</th><th>Area</th><th>Category</th><th>Owner</th><th>Status</th><th>Actions</th></tr></thead><tbody id="rows"></tbody></table></div></div></section><section id="checklistPage" class="hidden panel"><h1>Checklist</h1><p class="muted">Select a block on the Dashboard to view its work orders. Checklist templates will be configured later.</p></section><section id="formatterPage" class="hidden panel"><h1>Formatter</h1><p class="eyebrow">UPLOAD · VALIDATION DATA</p><div class="uploadbox"><label for="formatFile">Select QFAD Validation Excel (.xlsx) or CSV (.csv)</label><input type="file" id="formatFile" accept=".xlsx,.xls,.csv"><p class="muted">Match against QFAD DG / Rack assignments. T0 uses Source / Device A. T1 uses Source first, then Remote / Expected if unmatched. Racks absent from the report will not be reset to zero.</p><p id="formatResult" class="muted">No file selected</p><div class="format-actions"><button id="generateConnectionList" class="secondary" disabled>Generate Connection List</button><button id="downloadConnectionList" disabled>Download Connection List (.xlsx)</button><button id="commitFormat" disabled>Confirm & Save to Supabase</button><button class="secondary" id="clearPreview">Clear Preview</button></div><p id="connectionListStatus" class="muted">Upload a source workbook to generate a complete connection list.</p><div id="connectionListPreview" class="tablewrap"></div><div id="formatPreview" class="tablewrap"></div><section id="reportViewer" class="report-viewer report-hidden"><div class="report-top"><div><h2>COMPUTE LINK VALIDATION — REPORT VIEWER</h2><small id="reportName">Upload a workbook to inspect its worksheets</small></div><button type="button" class="secondary" id="reportExport">Export Active Sheet (CSV)</button></div><div id="reportSummary" class="report-summary report-hidden"></div><div id="reportTabs" class="report-tabs"></div><div id="reportGrid" class="report-grid"></div><div id="reportFoot" class="report-foot"></div></section></div></section></section>
 </main>
 <dialog id="blockDetail"><div class="dialoghead"><h2 id="blockDetailTitle">BLOCK Details</h2><button type="button" class="secondary" onclick="document.getElementById('blockDetail').close()">Close</button></div><div id="blockDetailItems"></div></dialog>
 <dialog id="editor"><h2 id="editorTitle">New Work Order</h2><form id="ticketForm"><div class="formgrid"><div><label>Ticket No. *</label><input id="ticket_no" required maxlength="80"></div><div><label>Title *</label><input id="title" required></div><div><label>Area</label><input id="block_name" value="MFAB"></div><div><label>Category</label><input id="category" value="Validation"></div><div><label>Owner</label><input id="owner"></div><div><label>Status</label><select id="status"><option value="待处理">Pending</option><option value="处理中" selected>In Progress</option><option value="已完成">Completed</option><option value="暂停">On Hold</option></select></div><div class="full"><label>Details</label><textarea id="details"></textarea></div></div><p id="formMessage" class="error" role="status"></p><div class="dialogactions"><button type="button" id="cancel" class="secondary">Cancel</button><button type="submit" id="saveTicket">Save Work Order</button></div></form></dialog>
@@ -68,9 +78,12 @@ const $ = id => document.getElementById(id);
 const db = window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 let user=null, role='viewer', tickets=[], racks=[], editingId=null, channel=null, rackChannel=null, snapshotChannel=null, snapshots=[], imports=[], pendingImport=null;
 function showMessage(id,text,isError=false){$(id).textContent=text;$(id).className=isError?'notice error':'notice';}
-let selectedArea='QFAB T0-T1';
-function renderTickets(){$('search').placeholder='Filter by BLOCK number or status...';const q=$('search').value.toLowerCase().trim();const areaTickets=tickets.filter(t=>selectedArea==='CFAB/MFAB'?(!/qfab/i.test(t.category||'')):String(t.category||'').toUpperCase().includes(selectedArea==='QFAB'?'QFAB':'TO-HOST'));const filtered=areaTickets.filter(t=>[t.ticket_no,t.title,t.owner,t.block_name,t.category,t.status].some(v=>String(v??'').toLowerCase().includes(q)));const groups=new Map();for(const t of filtered){const key=t.block_name||'UNASSIGNED';if(!groups.has(key))groups.set(key,[]);groups.get(key).push(t)}$('blocksCount').textContent=groups.size;$('openCount').textContent=areaTickets.filter(t=>t.status!=='已完成').length;$('progress').textContent=areaTickets.filter(t=>t.status==='处理中').length;$('completed').textContent=areaTickets.filter(t=>t.status==='已完成').length;$('areaTitle').textContent=selectedArea+' · Validations Status';const cards=$('blockCards');cards.replaceChildren();for(const [block,items] of [...groups.entries()].sort((a,b)=>a[0].localeCompare(b[0],undefined,{numeric:true}))){const open=items.filter(t=>t.status!=='已完成').length,done=items.length-open;const card=document.createElement('button');card.className='blockcard';const top=document.createElement('div');top.className='blocktop';const name=document.createElement('strong');name.textContent=block.toUpperCase().startsWith('BLOCK')?block.toUpperCase():'BLOCK '+block;const dot=document.createElement('span');dot.className='dot';top.append(name,dot);const state=document.createElement('div');state.className='blockstate';state.textContent=open?'IN PROGRESS':'<5 CLEARED';const count=document.createElement('div');count.className='blockcount';count.textContent=open;const line=document.createElement('div');line.className='progressline';const fill=document.createElement('span');fill.style.width=(items.length?done/items.length*100:0)+'%';line.append(fill);const note=document.createElement('div');note.className='blocknote';note.textContent=items.length+' tickets · '+done+' cleared';const foot=document.createElement('div');foot.className='blockfoot';foot.textContent=open?'active':'ready';card.append(top,state,count,line,note,foot);card.addEventListener('click',()=>showBlock(block,items));cards.append(card)}if(!groups.size){const empty=document.createElement('p');empty.className='muted';empty.textContent='No block data. Click + New Work Order and enter a block (e.g. BLOCK 05).';cards.append(empty)}const tbody=$('rows');tbody.replaceChildren();for(const t of filtered){const tr=document.createElement('tr');for(const field of ['ticket_no','title','block_name','category','owner','status']){const td=document.createElement('td');td.textContent=field==='status'?({'待处理':'Pending','处理中':'In Progress','已完成':'Completed','暂停':'On Hold'}[t[field]]||t[field]||''):(t[field]??'');tr.append(td)}const td=document.createElement('td');if(['admin','editor'].includes(role)){const btn=document.createElement('button');btn.className='small secondary';btn.textContent='Edit';btn.addEventListener('click',()=>openEditor(t));td.append(btn)}tr.append(td);tbody.append(tr)}if(!filtered.length){const tr=document.createElement('tr');const td=document.createElement('td');td.colSpan=7;td.textContent='No work orders';tr.append(td);tbody.append(tr)}}
-function isRackArea(){return selectedArea==='QFAB T0-T1'||selectedArea==='T0-HOPS';}
+let selectedArea='QFAD';
+// Display label is independent of the stored Supabase area key.
+function displayArea(area){return area==='QFAD'?'QFAB T0-T1':area;}
+function normalizeArea(area){return area==='QFAB T0-T1'?'QFAD':area;}
+function renderTickets(){$('search').placeholder='Filter by BLOCK number or status...';const q=$('search').value.toLowerCase().trim();const areaTickets=tickets.filter(t=>selectedArea==='CFAB/MFAB'?(!/qfab/i.test(t.category||'')):String(t.category||'').toUpperCase().includes(selectedArea==='QFAD'?'QFAB':'TO-HOST'));const filtered=areaTickets.filter(t=>[t.ticket_no,t.title,t.owner,t.block_name,t.category,t.status].some(v=>String(v??'').toLowerCase().includes(q)));const groups=new Map();for(const t of filtered){const key=t.block_name||'UNASSIGNED';if(!groups.has(key))groups.set(key,[]);groups.get(key).push(t)}$('blocksCount').textContent=groups.size;$('openCount').textContent=areaTickets.filter(t=>t.status!=='已完成').length;$('progress').textContent=areaTickets.filter(t=>t.status==='处理中').length;$('completed').textContent=areaTickets.filter(t=>t.status==='已完成').length;$('areaTitle').textContent=displayArea(selectedArea)+' · Validations Status';const cards=$('blockCards');cards.replaceChildren();for(const [block,items] of [...groups.entries()].sort((a,b)=>a[0].localeCompare(b[0],undefined,{numeric:true}))){const open=items.filter(t=>t.status!=='已完成').length,done=items.length-open;const card=document.createElement('button');card.className='blockcard';const top=document.createElement('div');top.className='blocktop';const name=document.createElement('strong');name.textContent=block.toUpperCase().startsWith('BLOCK')?block.toUpperCase():'BLOCK '+block;const dot=document.createElement('span');dot.className='dot';top.append(name,dot);const state=document.createElement('div');state.className='blockstate';state.textContent=open?'IN PROGRESS':'<5 CLEARED';const count=document.createElement('div');count.className='blockcount';count.textContent=open;const line=document.createElement('div');line.className='progressline';const fill=document.createElement('span');fill.style.width=(items.length?done/items.length*100:0)+'%';line.append(fill);const note=document.createElement('div');note.className='blocknote';note.textContent=items.length+' tickets · '+done+' cleared';const foot=document.createElement('div');foot.className='blockfoot';foot.textContent=open?'active':'ready';card.append(top,state,count,line,note,foot);card.addEventListener('click',()=>showBlock(block,items));cards.append(card)}if(!groups.size){const empty=document.createElement('p');empty.className='muted';empty.textContent='No block data. Click + New Work Order and enter a block (e.g. BLOCK 05).';cards.append(empty)}const tbody=$('rows');tbody.replaceChildren();for(const t of filtered){const tr=document.createElement('tr');for(const field of ['ticket_no','title','block_name','category','owner','status']){const td=document.createElement('td');td.textContent=field==='status'?({'待处理':'Pending','处理中':'In Progress','已完成':'Completed','暂停':'On Hold'}[t[field]]||t[field]||''):(t[field]??'');tr.append(td)}const td=document.createElement('td');if(['admin','editor'].includes(role)){const btn=document.createElement('button');btn.className='small secondary';btn.textContent='Edit';btn.addEventListener('click',()=>openEditor(t));td.append(btn)}tr.append(td);tbody.append(tr)}if(!filtered.length){const tr=document.createElement('tr');const td=document.createElement('td');td.colSpan=7;td.textContent='No work orders';tr.append(td);tbody.append(tr)}}
+function isRackArea(){return selectedArea==='QFAD'||selectedArea==='T0-HOPS';}
 function render(){
   $('rackTools').classList.toggle('hidden',!isRackArea()||role!=='admin');
   $('add').classList.toggle('hidden',isRackArea()||!['admin','editor'].includes(role));
@@ -82,7 +95,7 @@ function renderRacks(){
   const q=$('search').value.trim().toLowerCase();
   const grouped=new Map(Array.from({length:6},(_,i)=>['DG'+(i+1),[]]));
   for(const r of list){if(!grouped.has(r.dg))grouped.set(r.dg,[]);grouped.get(r.dg).push(r);}
-  $('areaTitle').textContent=selectedArea+' · DG / Rack Dashboard';
+  $('areaTitle').textContent=displayArea(selectedArea)+' · DG / Rack Dashboard';
   $('blocksCount').textContent=grouped.size;
   const totals=list.reduce((acc,r)=>{const x=latestFor(r.id);if(x){acc.covered++;acc.lldp+=x.t0_lldp+x.t1_lldp;acc.intf+=x.t0_interface+x.t1_interface;acc.opt+=x.t0_optics+x.t1_optics;acc.ber+=x.t0_ber+x.t1_ber;}return acc;},{covered:0,lldp:0,intf:0,opt:0,ber:0});
   $('openCount').textContent=totals.lldp+totals.intf+totals.opt+totals.ber;
@@ -153,8 +166,8 @@ $('addRack').addEventListener('click',async()=>{
   $('rackNumber').value='';showMessage('rackMessage','Rack saved');await loadRacks();
 });
 function showBlock(block,items){$('blockDetailTitle').textContent=block.toUpperCase()+' · Details';const wrap=$('blockDetailItems');wrap.replaceChildren();for(const t of items){const item=document.createElement('div');item.className='detailitem';const info=document.createElement('div');const title=document.createElement('strong');title.textContent=t.ticket_no+' · '+t.title;const sub=document.createElement('p');sub.className='muted';sub.textContent=({'待处理':'Pending','处理中':'In Progress','已完成':'Completed','暂停':'On Hold'}[t.status]||t.status||'')+' · '+(t.owner||'Unassigned')+' · '+(t.details||'');info.append(title,sub);item.append(info);if(['admin','editor'].includes(role)){const b=document.createElement('button');b.textContent='Edit';b.className='small';b.onclick=()=>{$('blockDetail').close();openEditor(t)};item.append(b)}wrap.append(item)}$('blockDetail').showModal()}
-document.querySelectorAll('[data-page]').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('[data-page]').forEach(x=>x.classList.toggle('selected',x===b));for(const page of ['dashboard','checklist','formatter'])$(page+'Page').classList.toggle('hidden',b.dataset.page!==page)}));document.querySelectorAll('[data-area]').forEach(b=>b.addEventListener('click',()=>{selectedArea=b.dataset.area;$('search').value='';document.querySelectorAll('[data-area]').forEach(x=>x.classList.toggle('selected',x===b));render()}));$('formatFile').addEventListener('change',async e=>{const file=e.target.files[0];pendingImport=null;$('commitFormat').disabled=true;$('formatPreview').replaceChildren();if(!file){$('formatResult').textContent='No file selected';return;}try{await previewValidation(file);}catch(err){showMessage('formatResult','Failed to read file: '+err.message,true);}});
-$('clearPreview').onclick=()=>{$('formatFile').value='';pendingImport=null;$('formatPreview').replaceChildren();$('formatResult').textContent='No file selected';$('commitFormat').disabled=true;};
+document.querySelectorAll('[data-page]').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('[data-page]').forEach(x=>x.classList.toggle('selected',x===b));for(const page of ['dashboard','checklist','formatter'])$(page+'Page').classList.toggle('hidden',b.dataset.page!==page)}));document.querySelectorAll('[data-area]').forEach(b=>b.addEventListener('click',()=>{selectedArea=normalizeArea(b.dataset.area);$('search').value='';document.querySelectorAll('[data-area]').forEach(x=>x.classList.toggle('selected',x===b));render()}));$('formatFile').addEventListener('change',async e=>{const file=e.target.files[0];pendingImport=null;$('commitFormat').disabled=true;$('formatPreview').replaceChildren();$('reportViewer').classList.add('report-hidden');displayedWorkbook=null;generatedConnectionList=null;$('generateConnectionList').disabled=true;$('downloadConnectionList').disabled=true;$('connectionListPreview').replaceChildren();if(!file){$('formatResult').textContent='No file selected';return;}try{await previewValidation(file);}catch(err){showMessage('formatResult','Failed to read file: '+err.message,true);}});
+$('clearPreview').onclick=()=>{$('formatFile').value='';pendingImport=null;$('formatPreview').replaceChildren();$('formatResult').textContent='No file selected';$('commitFormat').disabled=true;generatedConnectionList=null;$('generateConnectionList').disabled=true;$('downloadConnectionList').disabled=true;$('connectionListPreview').replaceChildren();$('connectionListStatus').textContent='Upload a source workbook to generate a complete connection list.';};
 $('commitFormat').onclick=commitValidation;
 
 async function loadTickets(){const {data,error}=await db.from('work_orders').select('id,ticket_no,title,block_name,category,owner,status,details,created_at').order('created_at',{ascending:false});if(error){showMessage('message','Failed to load work orders: '+error.message,true);return;}tickets=data||[];showMessage('message','');render();}
@@ -167,6 +180,107 @@ $('add').addEventListener('click',()=>openEditor());$('cancel').addEventListener
 $('ticketForm').addEventListener('submit',async e=>{e.preventDefault();if(!['admin','editor'].includes(role))return;const payload={};for(const id of ['ticket_no','title','block_name','category','owner','status','details'])payload[id]=$(id).value.trim();$('saveTicket').disabled=true;const result=editingId?await db.from('work_orders').update(payload).eq('id',editingId):await db.from('work_orders').insert({...payload,created_by:user.id});$('saveTicket').disabled=false;if(result.error){$('formMessage').textContent='Save failed: '+result.error.message;return;}$('editor').close();await loadTickets();});
 (async()=>{if(SUPABASE_KEY.startsWith('PASTE_')){showMessage('loginMessage','Configure the Supabase publishable key in the code first.',true);return;}const {data}=await db.auth.getUser();if(data.user)await openDashboard(data.user);})();
 
+
+// Spreadsheet-like read-only workbook viewer. Does not change the existing QFAD importer.
+let displayedWorkbook=null,displayedSheet=null;
+function reportCell(v){return v===null||v===undefined?'':String(v);}
+function renderReportSheet(name){
+ if(!displayedWorkbook)return;displayedSheet=name;
+ document.querySelectorAll('#reportTabs button').forEach(b=>b.classList.toggle('active',b.dataset.sheet===name));
+ const ws=displayedWorkbook.Sheets[name];const matrix=XLSX.utils.sheet_to_json(ws,{header:1,defval:'',raw:false});
+ const grid=$('reportGrid');grid.replaceChildren();const table=document.createElement('table');
+ const maxCols=Math.min(55,Math.max(1,...matrix.slice(0,400).map(r=>r.length)));const limit=Math.min(matrix.length,1500);
+ const head=document.createElement('thead'),hr=document.createElement('tr');
+ for(let c=0;c<maxCols;c++){const th=document.createElement('th');th.textContent=XLSX.utils.encode_col(c);hr.append(th);}head.append(hr);table.append(head);
+ const body=document.createElement('tbody');for(let i=0;i<limit;i++){const tr=document.createElement('tr');const row=matrix[i]||[];for(let c=0;c<maxCols;c++){const td=document.createElement('td');td.textContent=reportCell(row[c]);tr.append(td);}body.append(tr);}table.append(body);grid.append(table);
+ $('reportFoot').textContent=name+' · '+matrix.length+' rows · '+maxCols+' columns'+(limit<matrix.length?' · Displaying first '+limit+' rows for performance':'')+' · Read-only preview';
+}
+function reportMetric(parent,label,value){const card=document.createElement('div');card.className='report-stat';const l=document.createElement('span');l.textContent=label;const n=document.createElement('strong');n.textContent=reportCell(value);card.append(l,n);parent.append(card);}
+function showWorkbookReport(workbook,file){
+ displayedWorkbook=workbook;generatedConnectionList=null;$('generateConnectionList').disabled=false;$('downloadConnectionList').disabled=true;$('connectionListStatus').textContent='Workbook loaded. Click Generate Connection List to extract all connection rows.';const viewer=$('reportViewer');viewer.classList.remove('report-hidden');$('reportName').textContent=file.name+' · '+workbook.SheetNames.length+' worksheets';
+ const tabs=$('reportTabs');tabs.replaceChildren();for(const name of workbook.SheetNames){const b=document.createElement('button');b.type='button';b.dataset.sheet=name;b.textContent=name;b.addEventListener('click',()=>renderReportSheet(name));tabs.append(b);}
+ const summary=$('reportSummary');summary.replaceChildren();summary.classList.add('report-hidden');
+ const summaryName=workbook.SheetNames.find(x=>x.toLowerCase()==='summary');
+ if(summaryName){const rows=XLSX.utils.sheet_to_json(workbook.Sheets[summaryName],{header:1,defval:'',raw:false});
+  // Metrics are only shown when a label is present in the actual uploaded report.
+  const patterns=[['TOTAL ISSUES',/total issues/i],['HOST LINK ERRORS',/host link errors/i],['MISMATCHES',/mismatches/i],['GHOST LINKS',/ghost links/i],['OPTICS (GPU)',/optics.*gpu/i],['OPTICS (HOST)',/optics.*host/i],['FEC (GPU)',/fec.*gpu/i],['FEC (HOST)',/fec.*host/i]];
+  const metrics=document.createElement('div');metrics.className='report-stats';
+  for(const [label,re] of patterns){let found;for(let r=0;r<Math.min(rows.length,25)&&!found;r++){for(let c=0;c<rows[r].length;c++){if(re.test(reportCell(rows[r][c]))){let val='';for(let rr=r+1;rr<=Math.min(r+2,rows.length-1);rr++){if(reportCell(rows[rr]?.[c]).trim()){val=rows[rr][c];break;}}if(val!=='')found=val;break;}}}if(found!==undefined)reportMetric(metrics,label,found);}
+  if(metrics.children.length){const h=document.createElement('h3');h.textContent='VALIDATION SUMMARY';summary.append(h,metrics);summary.classList.remove('report-hidden');}
+ }
+ renderReportSheet(summaryName||workbook.SheetNames[0]);
+}
+$('reportExport').addEventListener('click',()=>{if(!displayedWorkbook||!displayedSheet)return;const csv=XLSX.utils.sheet_to_csv(displayedWorkbook.Sheets[displayedSheet]);const blob=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=displayedSheet+'.csv';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);});
+
+// Complete Connection List generator. This does NOT infer missing links from error-only reports.
+let generatedConnectionList=null;
+const CONNECTION_COLUMNS=['T0 Interface','L&R','T0 Rack','T0 Elev','OHR','FDF','T0 PP','Compute Host','Compute Port','T1 Interface','T1 Rack','T1 Elev','T1 PP','Source Sheet'];
+function canonicalConnectionHeader(v){return String(v??'').toLowerCase().replace(/[^a-z0-9]+/g,'');}
+const CONNECTION_ALIASES={
+ 'T0 Interface':['t0interface','sourceinterface','interfacea','deviceainterface','sourceport','t0port'],
+ 'L&R':['lr','landr','leftandright'],
+ 'T0 Rack':['t0rack','sourcerack','racka','devicearack'],
+ 'T0 Elev':['t0elev','t0elevation','sourceelevation','deviceaelevation'],
+ 'OHR':['ohr'], 'FDF':['fdf'], 'T0 PP':['t0pp','t0patchpanel','sourcepatchpanel'],
+ 'Compute Host':['computehost','hostname','host','destinationhost'],
+ 'Compute Port':['computeport','hostport','destinationport'],
+ 'T1 Interface':['t1interface','remoteinterface','interfaceb','devicebinterface'],
+ 'T1 Rack':['t1rack','remoterack','rackb','devicebrack'],
+ 'T1 Elev':['t1elev','t1elevation','remoteelevation'],
+ 'T1 PP':['t1pp','t1patchpanel','remotepatchpanel']
+};
+function detectConnectionHeader(row){
+ const indexes={};let hits=0;
+ row.forEach((v,i)=>{const key=canonicalConnectionHeader(v);for(const [col,aliases] of Object.entries(CONNECTION_ALIASES)){if(aliases.includes(key)&&indexes[col]===undefined){indexes[col]=i;hits++;}}});
+ return {indexes,hits};
+}
+function connectionLocationRack(v){const x=locationRack(v);return x?'Rack '+x:'';}
+function extractConnectionRows(wb){
+ const result=[],used=[],skipped=[];
+ for(const name of wb.SheetNames){
+  const matrix=XLSX.utils.sheet_to_json(wb.Sheets[name],{header:1,defval:'',raw:false});
+  let best={hits:0,indexes:{}},headerIndex=-1;
+  for(let i=0;i<Math.min(matrix.length,30);i++){const found=detectConnectionHeader(matrix[i]||[]);if(found.hits>best.hits){best=found;headerIndex=i;}}
+  // A connection list needs at least 2 recognized fields, including a device/port/rack.
+  if(best.hits<2||!['T0 Interface','T0 Rack','Compute Host','T1 Interface','T1 Rack'].some(k=>best.indexes[k]!==undefined)){skipped.push(name);continue;}
+  used.push(name);
+  for(let i=headerIndex+1;i<matrix.length;i++){
+   const raw=matrix[i]||[];if(!raw.some(x=>String(x??'').trim()))continue;
+   const out={};for(const col of CONNECTION_COLUMNS.slice(0,-1))out[col]=best.indexes[col]===undefined?'':String(raw[best.indexes[col]]??'').trim();
+   // Location fields may be available even when Rack fields are not.
+   const hdr=matrix[headerIndex]||[];
+   const getByAlias=aliases=>{const ix=hdr.findIndex(h=>aliases.includes(canonicalConnectionHeader(h)));return ix>=0?raw[ix]:'';};
+   if(!out['T0 Rack'])out['T0 Rack']=connectionLocationRack(getByAlias(['sourcedevicelocation','devicealocation']));
+   if(!out['T1 Rack'])out['T1 Rack']=connectionLocationRack(getByAlias(['remotedevicelocation','expectedblocation','deviceblocation']));
+   if(!CONNECTION_COLUMNS.slice(0,-1).some(c=>out[c]))continue;
+   out['Source Sheet']=name;result.push(out);
+  }
+ }
+ return {rows:result,used,skipped};
+}
+function renderGeneratedConnections(){
+ const data=generatedConnectionList,wrap=$('connectionListPreview');wrap.replaceChildren();if(!data)return;
+ const table=document.createElement('table'),thead=document.createElement('thead'),tr=document.createElement('tr');
+ for(const col of CONNECTION_COLUMNS){const th=document.createElement('th');th.textContent=col;tr.append(th);}thead.append(tr);table.append(thead);
+ const body=document.createElement('tbody');for(const row of data.rows.slice(0,250)){const tr=document.createElement('tr');for(const col of CONNECTION_COLUMNS){const td=document.createElement('td');td.textContent=row[col]||'';tr.append(td);}body.append(tr);}table.append(body);wrap.append(table);
+ $('connectionListStatus').textContent=`Generated ${data.rows.length} connection rows from ${data.used.length} sheet(s): ${data.used.join(', ')}. Previewing up to 250 rows. ${data.skipped.length} sheet(s) did not contain recognizable connection columns.`;
+}
+$('generateConnectionList').addEventListener('click',()=>{
+ if(!displayedWorkbook)return;
+ const result=extractConnectionRows(displayedWorkbook);
+ if(!result.rows.length){generatedConnectionList=null;$('downloadConnectionList').disabled=true;$('connectionListPreview').replaceChildren();$('connectionListStatus').textContent='No connection rows found. Upload the original connection/cabling workbook containing columns such as T0 Interface, T0 Rack, FDF, Compute Host. An error-only report cannot reconstruct missing healthy connections.';return;}
+ generatedConnectionList=result;renderGeneratedConnections();$('downloadConnectionList').disabled=false;
+});
+$('downloadConnectionList').addEventListener('click',()=>{
+ if(!generatedConnectionList?.rows.length)return;
+ const output=XLSX.utils.book_new();
+ const sheet=XLSX.utils.json_to_sheet(generatedConnectionList.rows,{header:CONNECTION_COLUMNS});
+ sheet['!cols']=CONNECTION_COLUMNS.map(c=>({wch:Math.min(42,Math.max(13,c.length+5))}));
+ sheet['!autofilter']={ref:sheet['!ref']};
+ XLSX.utils.book_append_sheet(output,sheet,'Connection List');
+ XLSX.writeFile(output,'FORCEWIN_Complete_Connection_List.xlsx');
+});
+
 // Formatter: read real report sheet headers; never infer zero for racks not covered.
 const ERR_FIELDS=['t0_interface','t0_lldp','t0_optics','t0_ber','t1_interface','t1_lldp','t1_optics','t1_ber'];
 const REPORT_SHEETS=['T0_Interface','T0_LLDP','T0_Optics','T0_BER','T1_Interface','T1_LLDP','T1_Optics','T1_BER'];
@@ -174,13 +288,13 @@ function locationRack(value){const s=String(value??'').trim();const m=s.match(/(
 function rowLocation(row,keys){for(const key of keys){if(row[key]){const rack=locationRack(row[key]);if(rack)return rack;}}return null;}
 async function previewValidation(file){
  if(!window.XLSX)throw Error('Excel parser unavailable. Check your connection and refresh.');
- if(!racks.length)throw Error('No Supabase racks loaded. Check your login and rack permissions.');
+ 
  $('formatResult').textContent='Parsing '+file.name+' ...';
- const buf=await file.arrayBuffer();const workbook=XLSX.read(buf,{type:'array',raw:false});
+ const buf=await file.arrayBuffer();const workbook=XLSX.read(buf,{type:'array',raw:false});showWorkbookReport(workbook,file);
  const available=REPORT_SHEETS.filter(n=>workbook.SheetNames.includes(n));
- if(available.length===0)throw Error('No T0/T1 Interface, LLDP, Optics or BER sheets found. Use the original Validation report.');
- const lookup=new Map(racks.filter(r=>r.area==='QFAB T0-T1'&&r.active!==false).map(r=>[r.rack_number,r]));
- if(!lookup.size)throw Error('QFAB T0-T1 racks not loaded. Check the database.');
+ if(available.length===0){$('formatResult').textContent='Workbook loaded for Connection List generation. No QFAD error sheets found; Supabase error import is unavailable for this file.';return;}
+ const lookup=new Map(racks.filter(r=>r.area==='QFAD'&&r.active!==false).map(r=>[r.rack_number,r]));
+ if(!lookup.size){$('formatResult').textContent='Workbook loaded for Connection List generation. QFAD racks are not available for error import.';return;}
  const summary=new Map(),unmatched=[],stats={rows:0,matched:0,unmatched:0,skipped:0};
  for(const name of available){const sheet=workbook.Sheets[name];const rows=XLSX.utils.sheet_to_json(sheet,{defval:'',raw:false});const [tier,category]=name.toLowerCase().split('_');const field=tier+'_'+category;
   for(let i=0;i<rows.length;i++){const row=rows[i];if(!Object.values(row).some(x=>String(x).trim()))continue;stats.rows++;
@@ -195,7 +309,7 @@ async function previewValidation(file){
  }
  const entries=[...summary.values()].sort((a,b)=>a.dg.localeCompare(b.dg)||a.rack_number.localeCompare(b.rack_number));
  pendingImport={fileName:file.name,entries,stats,available,unmatched};
- $('formatResult').textContent='QFAB T0-T1 · '+available.length+' sheets · '+stats.rows+' errors · matched '+stats.matched+' · unmatched '+stats.unmatched+' rows. Only racks with matched errors will be saved.';
+ $('formatResult').textContent='QFAD · '+available.length+' sheets · '+stats.rows+' errors · matched '+stats.matched+' · unmatched '+stats.unmatched+' rows. Only racks with matched errors will be saved.';
  const wrap=$('formatPreview');wrap.replaceChildren();const table=document.createElement('table');table.id='previewTable';
  const thead=document.createElement('thead'),tr=document.createElement('tr');for(const title of ['DG','Rack','T0 I','T0 L','T0 O','T0 B','T1 I','T1 L','T1 O','T1 B','Total']){const th=document.createElement('th');th.textContent=title;tr.append(th);}thead.append(tr);table.append(thead);
  const body=document.createElement('tbody');for(const entry of entries){const r=document.createElement('tr');for(const val of [entry.dg,entry.rack_number,...ERR_FIELDS.map(k=>entry[k]),errorTotal(entry)]){const td=document.createElement('td');td.textContent=val;r.append(td);}body.append(r);}table.append(body);wrap.append(table);
@@ -206,13 +320,13 @@ async function previewValidation(file){
 }
 async function commitValidation(){
  if(!pendingImport||!['admin','editor'].includes(role))return;
- const item=pendingImport;if(!confirm('Save QFAB T0-T1 snapshots for '+item.entries.length+' racks? '+item.stats.unmatched+' unmatched rows will be skipped; other racks will not be reset.'))return;
+ const item=pendingImport;if(!confirm('Save QFAD snapshots for '+item.entries.length+' racks? '+item.stats.unmatched+' unmatched rows will be skipped; other racks will not be reset.'))return;
  $('commitFormat').disabled=true;showMessage('formatResult','Saving import record...');
- const {data:record,error:firstError}=await db.from('validation_imports').insert({area:'QFAB T0-T1',filename:item.fileName,imported_by:user.id}).select('id').single();
+ const {data:record,error:firstError}=await db.from('validation_imports').insert({area:'QFAD',filename:item.fileName,imported_by:user.id}).select('id').single();
  if(firstError){showMessage('formatResult','Failed to create import: '+firstError.message,true);$('commitFormat').disabled=false;return;}
  const payload=item.entries.map(e=>{const x={import_id:record.id,rack_id:e.rack_id};for(const f of ERR_FIELDS)x[f]=e[f];return x;});
  for(let i=0;i<payload.length;i+=200){const {error}=await db.from('rack_error_snapshots').insert(payload.slice(i,i+200));if(error){showMessage('formatResult','Failed to save snapshots: '+error.message+'. Import ID: '+record.id+'. Do not retry yet; check for partially saved data first.',true);return;}}
- pendingImport=null;showMessage('formatResult','Saved successfully: QFAB T0-T1 '+payload.length+' rack snapshots written to Supabase.');await loadSnapshots();
+ pendingImport=null;showMessage('formatResult','Saved successfully: QFAD '+payload.length+' rack snapshots written to Supabase.');await loadSnapshots();
 }
 
 </script>
