@@ -70,6 +70,22 @@ tr:hover td{background:#34294c}
 #connectionListPreview td{white-space:nowrap;max-width:340px;overflow:hidden;text-overflow:ellipsis}
 #connectionListStatus{padding:8px 0}
 </style>
+<style id="fw-service-frame">
+/* In-service DG cards: reference-inspired green outline, dark panel, compact telemetry. */
+.blockcard.fw-in-service{background:linear-gradient(155deg,#103b25 0%,#10251b 65%,#15251f 100%)!important;border:3px solid #39ff86!important;box-shadow:0 0 0 1px #1b854a,0 0 22px rgba(57,255,134,.30),inset 0 0 18px rgba(57,255,134,.07)!important;min-height:280px;gap:9px;color:#f7f7fb}
+.blockcard.fw-in-service:hover,.blockcard.fw-in-service:focus-visible{border-color:#a4ffbe!important;box-shadow:0 0 0 2px #5eff9e,0 0 34px rgba(57,255,134,.55)!important;background:#164b2e!important}
+.blockcard.fw-in-service .blocktop{font:700 13px monospace;letter-spacing:.03em}
+.blockcard.fw-in-service .dot{background:#52ff83!important;box-shadow:0 0 0 4px rgba(82,255,131,.18),0 0 14px #52ff83!important}
+.blockcard.fw-in-service .blockstate{color:#5aff9a!important;font-weight:900!important;font:10px monospace;letter-spacing:1.3px}
+.blockcard.fw-in-service .blockcount{font-size:24px;line-height:1.1;color:#fff}
+.blockcard.fw-in-service .fw-service-sub{font:10px monospace;color:#b4e4c6;white-space:normal;line-height:1.4}
+.blockcard.fw-in-service .fw-service-breakdown{display:grid;grid-template-columns:22px 1fr 1fr;gap:5px 8px;align-items:center;font:10px monospace;color:#adb1bd;margin-top:8px}
+.blockcard.fw-in-service .fw-service-breakdown .fw-h{font-weight:700;text-align:right;color:#a777ff}
+.blockcard.fw-in-service .fw-service-breakdown .fw-h:last-child{color:#ffae42}
+.blockcard.fw-in-service .fw-service-breakdown .fw-v{text-align:right;color:#e7e7ec}
+.blockcard.fw-in-service .blocknote{border-top:1px solid #424247;padding-top:11px;margin-top:8px;font:11px monospace;color:#c2f3d5}
+.blockcard.fw-in-service .blockfoot{font:700 12px monospace;color:#5aff9a;margin-top:auto}
+</style>
 </head>
 <body>
 <header><strong>FORCEWIN Validation</strong><div id="userbar" class="hidden"><span id="who" class="muted"></span> <button id="logout" class="secondary">Log Out</button></div></header>
@@ -167,11 +183,31 @@ function renderRacks(){
     const strong=document.createElement('strong');strong.textContent=dg;
     const dot=document.createElement('span');dot.className='dot';top.append(strong,dot);
     const state=document.createElement('div');state.className='blockstate';state.textContent=isMarkedInService(selectedArea,dg)?'IN SERVICE':displayArea(selectedArea);
-    if(isMarkedInService(selectedArea,dg))state.classList.add('service-label');
+    if(isMarkedInService(selectedArea,dg)){state.classList.add('service-label');card.classList.add('fw-in-service');}
     const count=document.createElement('div');count.className='blockcount';const errors=items.reduce((n,r)=>n+errorTotal(latestFor(r.id)),0);count.textContent=errors+' errors';
     const note=document.createElement('div');note.className='blocknote';note.textContent=items.length+' racks · '+items.filter(r=>latestFor(r.id)).length+' with report';
     const foot=document.createElement('div');foot.className='blockfoot';foot.textContent='View Racks →';
-    card.append(top,state,count,note,foot);card.onclick=()=>showRacks(dg,items);cards.append(card);
+    if(isMarkedInService(selectedArea,dg)){
+      // Display actual latest report values only; a missing report is not a zero-error report.
+      const reported=items.filter(r=>latestFor(r.id));
+      const sub=document.createElement('div');sub.className='fw-service-sub';sub.textContent='(T0 + T1 validation errors)';
+      const bd=document.createElement('div');bd.className='fw-service-breakdown';
+      const columns=[['','T0','T1'],['I','t0_interface','t1_interface'],['L','t0_lldp','t1_lldp'],['O','t0_optics','t1_optics'],['F','t0_ber','t1_ber']];
+      for(const [label,a,b] of columns){
+        for(const [idx,value] of [label,a,b].entries()){
+          const cell=document.createElement('span');
+          if(idx===0){cell.textContent=value;}
+          else if(label===''){cell.textContent=value;cell.className='fw-h';}
+          else{cell.textContent=reported.length?String(reported.reduce((n,r)=>n+Number(latestFor(r.id)?.[value]||0),0)):'—';cell.className='fw-v';}
+          bd.append(cell);
+        }
+      }
+      count.textContent=reported.length?String(errors):'—';
+      note.textContent=items.length+' racks · '+reported.length+' with report';
+      foot.textContent='View Racks →';
+      card.append(top,state,count,sub,bd,note,foot);
+    }else{card.append(top,state,count,note,foot);}
+    card.onclick=()=>showRacks(dg,items);cards.append(card);
   }
   if(!cards.childElementCount){const p=document.createElement('p');p.className='muted';p.textContent='No matching DG / Rack found.';cards.append(p);}
   showMessage('message',list.length+' racks loaded from Supabase; '+totals.covered+' racks reported; '+compare.paired+' racks have two snapshots for trend comparison. Missing reports are not counted as zero.');
