@@ -9,22 +9,26 @@
 <style>
 body{background:#030405;color:#f3f5f8}header{background:#050505;border-bottom:1px solid #292929;padding:19px 3.5%}header strong{font-size:30px;letter-spacing:-1px}main{max-width:1500px;margin:0 auto;padding:10px 3.4%}.panel{background:#101113;border-color:#303034}.tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:0 0 24px;padding:10px 0 22px;border-bottom:1px solid #252525}.tabs button{background:#1c1c1f;border:1px solid #2b2b2f;border-radius:13px;padding:19px 12px;font-weight:600}.tabs button.selected{background:#1685f9;border-color:#1685f9;box-shadow:0 4px 15px #006fff33}.eyebrow{color:#1685ff;font:700 11px monospace;letter-spacing:2px;margin:24px 0}h1{font-size:24px}.metricgrid{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:10px;margin:32px 0 18px}.metric{background:#1c1c1e;border:1px solid #303034;border-radius:12px;padding:15px 9px;text-align:center;font:10px monospace;min-height:83px;color:#9fa7b5}.metric b{display:block;font:700 26px Arial;color:white;margin:8px 0 0}.toolbar{margin:18px 0}.toolbar input{background:#1d1d1f;border-color:#2e2e32}.blockgrid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px;margin:22px 0 34px}.blockcard{text-align:left;display:flex;flex-direction:column;gap:13px;min-height:225px;background:#1b1b1e;border:1px solid #2b2b30;border-radius:13px;padding:17px;color:#f5f5f5}.blockcard:hover,.blockcard:focus{border-color:#1685ff;outline:none}.blocktop{display:flex;justify-content:space-between;align-items:center;font:12px monospace}.dot{width:9px;height:9px;border-radius:50%;background:#27d966}.blockstate{color:#a3a7b5;font:10px monospace;letter-spacing:1px}.blockcount{font-size:24px;font-weight:700}.progressline{height:5px;background:#175899;border-radius:5px;overflow:hidden}.progressline span{display:block;height:100%;background:#1685ff}.blocknote{font:11px monospace;color:#a7afbd}.blockfoot{color:#27d966;font:12px monospace;margin-top:auto}.uploadbox{background:#1c1c1e;padding:32px;border-radius:12px;min-height:200px}.detailitem{border-bottom:1px solid #303038;padding:14px 0;display:flex;align-items:center;justify-content:space-between;gap:16px}.detailitem p{font-size:12px;overflow-wrap:anywhere}.dialoghead{display:flex;justify-content:space-between;align-items:center}dialog{background:#101113;border-color:#303034}input,textarea,select{background:#12151c}@media(max-width:1100px){.metricgrid{grid-template-columns:repeat(4,1fr)}.blockgrid{grid-template-columns:repeat(3,1fr)}}@media(max-width:650px){.blockgrid{grid-template-columns:repeat(2,1fr)}.metricgrid{grid-template-columns:repeat(2,1fr)}.tabs{gap:6px}.tabs button{padding:13px 3px;font-size:12px}header strong{font-size:20px}}
 </style>
+<style>
+#previewTable{min-width:680px} .format-actions{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin:14px 0} .rack-error{display:grid;grid-template-columns:1fr auto;gap:6px;padding:14px 0;border-bottom:1px solid #303038} .rack-error small{color:#a5aabb} .errline{font:12px monospace;color:#b4bfd0;grid-column:1/-1} .errcount{font-size:20px;font-weight:bold} .errorpill{color:#ffbd68} .delta{color:#8edcba;font-size:12px}
+</style>
 </head>
 <body>
 <header><strong>FORCEWIN Validation</strong><div id="userbar" class="hidden"><span id="who" class="muted"></span> <button id="logout" class="secondary">退出登录</button></div></header>
 <main>
 <section id="login" class="panel login"><h1>欢迎回来</h1><p class="muted">请使用员工账号登录</p><form id="loginForm"><label>电子邮箱</label><input id="email" type="email" required autocomplete="username"><label>密码</label><input id="password" type="password" required autocomplete="current-password"><button id="loginBtn" type="submit">登录</button></form><p id="loginMessage" class="notice" role="status"></p></section>
-<section id="dashboard" class="hidden"><nav class="tabs"><button class="tab selected" data-page="dashboard">Dashboard</button><button class="tab" data-page="checklist">Checklist</button><button class="tab" data-page="formatter">Formatter</button></nav><nav class="tabs" id="areas"><button class="area" data-area="CFAB/MFAB">CFAB/MFAB</button><button class="area selected" data-area="QFAD">QFAD</button><button class="area" data-area="T0-HOPS">T0-HOPS</button></nav><section id="dashboardPage"><p class="eyebrow">FORCEWIN · VALIDATION</p><h1 id="areaTitle">CFAB/MFAB · Validations Status</h1><div class="metricgrid"><div class="metric">BLOCKS<b id="blocksCount">0</b></div><div class="metric">OPEN ISSUES<b id="openCount">0</b></div><div class="metric">LLDP<b id="lldpCount">—</b></div><div class="metric">INTERFACE DOWN<b id="interfaceCount">—</b></div><div class="metric">OPTICS<b id="opticsCount">—</b></div><div class="metric">IN PROGRESS<b id="progress">0</b></div><div class="metric">CLEARED<b id="completed">0</b></div><div class="metric">IN SERVICE<b id="serviceCount">—</b></div></div><div class="toolbar"><input id="search" placeholder="Filter by BLOCK number or status..."><button id="refresh" class="secondary">刷新</button><button id="add">+ 新增工单</button></div><p id="message" class="notice" role="status"></p><div id="blockCards" class="blockgrid"></div><div id="rackTools" class="panel hidden"><h2>Rack 管理</h2><p class="muted">管理员可以新增 Rack 或停用 Rack。停用不会删除历史数据。</p><div class="toolbar"><select id="rackDG"><option>DG1</option><option>DG2</option><option>DG3</option><option>DG4</option><option>DG5</option><option>DG6</option></select><input id="rackNumber" placeholder="Rack Number，例如 0616" maxlength="40"><button id="addRack">新增 Rack</button></div><p id="rackMessage" class="notice"></p></div><div class="panel"><h2>Work Orders</h2><div class="tablewrap"><table><thead><tr><th>工单号</th><th>标题</th><th>区域</th><th>分类</th><th>负责人</th><th>状态</th><th>操作</th></tr></thead><tbody id="rows"></tbody></table></div></div></section><section id="checklistPage" class="hidden panel"><h1>Checklist</h1><p class="muted">选择 Dashboard 中的 BLOCK 查看对应工单；检查表模板将在后续配置。</p></section><section id="formatterPage" class="hidden panel"><h1>Formatter</h1><p class="eyebrow">UPLOAD · VALIDATION DATA</p><div class="uploadbox"><label for="formatFile">选择 CSV 文件（当前仅本地预览，不会自动写入数据库）</label><input type="file" id="formatFile" accept=".csv,text/csv"><p id="formatResult" class="muted">尚未选择文件</p></div></section></section>
+<section id="dashboard" class="hidden"><nav class="tabs"><button class="tab selected" data-page="dashboard">Dashboard</button><button class="tab" data-page="checklist">Checklist</button><button class="tab" data-page="formatter">Formatter</button></nav><nav class="tabs" id="areas"><button class="area" data-area="CFAB/MFAB">CFAB/MFAB</button><button class="area selected" data-area="QFAD">QFAD</button><button class="area" data-area="T0-HOPS">T0-HOPS</button></nav><section id="dashboardPage"><p class="eyebrow">FORCEWIN · VALIDATION</p><h1 id="areaTitle">CFAB/MFAB · Validations Status</h1><div class="metricgrid"><div class="metric">BLOCKS<b id="blocksCount">0</b></div><div class="metric">OPEN ISSUES<b id="openCount">0</b></div><div class="metric">LLDP<b id="lldpCount">—</b></div><div class="metric">INTERFACE DOWN<b id="interfaceCount">—</b></div><div class="metric">OPTICS<b id="opticsCount">—</b></div><div class="metric">IN PROGRESS<b id="progress">0</b></div><div class="metric">CLEARED<b id="completed">0</b></div><div class="metric">IN SERVICE<b id="serviceCount">—</b></div></div><div class="toolbar"><input id="search" placeholder="Filter by BLOCK number or status..."><button id="refresh" class="secondary">刷新</button><button id="add">+ 新增工单</button></div><p id="message" class="notice" role="status"></p><div id="blockCards" class="blockgrid"></div><div id="rackTools" class="panel hidden"><h2>Rack 管理</h2><p class="muted">管理员可以新增 Rack 或停用 Rack。停用不会删除历史数据。</p><div class="toolbar"><select id="rackDG"><option>DG1</option><option>DG2</option><option>DG3</option><option>DG4</option><option>DG5</option><option>DG6</option></select><input id="rackNumber" placeholder="Rack Number，例如 0616" maxlength="40"><button id="addRack">新增 Rack</button></div><p id="rackMessage" class="notice"></p></div><div class="panel"><h2>Work Orders</h2><div class="tablewrap"><table><thead><tr><th>工单号</th><th>标题</th><th>区域</th><th>分类</th><th>负责人</th><th>状态</th><th>操作</th></tr></thead><tbody id="rows"></tbody></table></div></div></section><section id="checklistPage" class="hidden panel"><h1>Checklist</h1><p class="muted">选择 Dashboard 中的 BLOCK 查看对应工单；检查表模板将在后续配置。</p></section><section id="formatterPage" class="hidden panel"><h1>Formatter</h1><p class="eyebrow">UPLOAD · VALIDATION DATA</p><div class="uploadbox"><label for="formatFile">选择 QFAD Validation Excel（.xlsx）或 CSV（.csv）</label><input type="file" id="formatFile" accept=".xlsx,.xls,.csv"><p class="muted">按 QFAD DG / Rack 配置匹配。T0 使用 Source / Device A；T1 优先 Source，不匹配时使用 Remote / Expected。未出现在报告中的 Rack 不会自动清零。</p><p id="formatResult" class="muted">尚未选择文件</p><div class="format-actions"><button id="commitFormat" disabled>确认写入 Supabase</button><button class="secondary" id="clearPreview">清除预览</button></div><div id="formatPreview" class="tablewrap"></div></div></section></section>
 </main>
 <dialog id="blockDetail"><div class="dialoghead"><h2 id="blockDetailTitle">BLOCK Details</h2><button type="button" class="secondary" onclick="document.getElementById('blockDetail').close()">关闭</button></div><div id="blockDetailItems"></div></dialog>
 <dialog id="editor"><h2 id="editorTitle">新增工单</h2><form id="ticketForm"><div class="formgrid"><div><label>工单号 *</label><input id="ticket_no" required maxlength="80"></div><div><label>标题 *</label><input id="title" required></div><div><label>区域</label><input id="block_name" value="MFAB"></div><div><label>分类</label><input id="category" value="Validation"></div><div><label>负责人</label><input id="owner"></div><div><label>状态</label><select id="status"><option>待处理</option><option selected>处理中</option><option>已完成</option><option>暂停</option></select></div><div class="full"><label>详细内容</label><textarea id="details"></textarea></div></div><p id="formMessage" class="error" role="status"></p><div class="dialogactions"><button type="button" id="cancel" class="secondary">取消</button><button type="submit" id="saveTicket">保存工单</button></div></form></dialog>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <script>
 const SUPABASE_URL = 'https://rexofhwumcrszzipkuyf.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_G7rcvMt6K-uYGee-8HkeqQ_Zpcml2e5';
 const $ = id => document.getElementById(id);
 const db = window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
-let user=null, role='viewer', tickets=[], racks=[], editingId=null, channel=null, rackChannel=null;
+let user=null, role='viewer', tickets=[], racks=[], editingId=null, channel=null, rackChannel=null, snapshotChannel=null, snapshots=[], imports=[], pendingImport=null;
 function showMessage(id,text,isError=false){$(id).textContent=text;$(id).className=isError?'notice error':'notice';}
 let selectedArea='QFAD';
 function renderTickets(){$('search').placeholder='Filter by BLOCK number or status...';const q=$('search').value.toLowerCase().trim();const areaTickets=tickets.filter(t=>selectedArea==='CFAB/MFAB'?(!/qfab/i.test(t.category||'')):String(t.category||'').toUpperCase().includes(selectedArea==='QFAB'?'QFAB':'TO-HOST'));const filtered=areaTickets.filter(t=>[t.ticket_no,t.title,t.owner,t.block_name,t.category,t.status].some(v=>String(v??'').toLowerCase().includes(q)));const groups=new Map();for(const t of filtered){const key=t.block_name||'UNASSIGNED';if(!groups.has(key))groups.set(key,[]);groups.get(key).push(t)}$('blocksCount').textContent=groups.size;$('openCount').textContent=areaTickets.filter(t=>t.status!=='已完成').length;$('progress').textContent=areaTickets.filter(t=>t.status==='处理中').length;$('completed').textContent=areaTickets.filter(t=>t.status==='已完成').length;$('areaTitle').textContent=selectedArea+' · Validations Status';const cards=$('blockCards');cards.replaceChildren();for(const [block,items] of [...groups.entries()].sort((a,b)=>a[0].localeCompare(b[0],undefined,{numeric:true}))){const open=items.filter(t=>t.status!=='已完成').length,done=items.length-open;const card=document.createElement('button');card.className='blockcard';const top=document.createElement('div');top.className='blocktop';const name=document.createElement('strong');name.textContent=block.toUpperCase().startsWith('BLOCK')?block.toUpperCase():'BLOCK '+block;const dot=document.createElement('span');dot.className='dot';top.append(name,dot);const state=document.createElement('div');state.className='blockstate';state.textContent=open?'IN PROGRESS':'<5 CLEARED';const count=document.createElement('div');count.className='blockcount';count.textContent=open;const line=document.createElement('div');line.className='progressline';const fill=document.createElement('span');fill.style.width=(items.length?done/items.length*100:0)+'%';line.append(fill);const note=document.createElement('div');note.className='blocknote';note.textContent=items.length+' tickets · '+done+' cleared';const foot=document.createElement('div');foot.className='blockfoot';foot.textContent=open?'active':'ready';card.append(top,state,count,line,note,foot);card.addEventListener('click',()=>showBlock(block,items));cards.append(card)}if(!groups.size){const empty=document.createElement('p');empty.className='muted';empty.textContent='暂无 BLOCK 数据。点击「+ 新增工单」并填写区域（如 BLOCK 05）开始。';cards.append(empty)}const tbody=$('rows');tbody.replaceChildren();for(const t of filtered){const tr=document.createElement('tr');for(const field of ['ticket_no','title','block_name','category','owner','status']){const td=document.createElement('td');td.textContent=t[field]??'';tr.append(td)}const td=document.createElement('td');if(['admin','editor'].includes(role)){const btn=document.createElement('button');btn.className='small secondary';btn.textContent='编辑';btn.addEventListener('click',()=>openEditor(t));td.append(btn)}tr.append(td);tbody.append(tr)}if(!filtered.length){const tr=document.createElement('tr');const td=document.createElement('td');td.colSpan=7;td.textContent='暂无工单';tr.append(td);tbody.append(tr)}}
@@ -42,8 +46,11 @@ function renderRacks(){
   for(const r of list){if(!grouped.has(r.dg))grouped.set(r.dg,[]);grouped.get(r.dg).push(r);}
   $('areaTitle').textContent=selectedArea+' · DG / Rack Dashboard';
   $('blocksCount').textContent=grouped.size;
-  $('openCount').textContent='—';$('progress').textContent='—';$('completed').textContent='—';
-  for(const id of ['lldpCount','interfaceCount','opticsCount','serviceCount'])$(id).textContent='—';
+  const totals=list.reduce((acc,r)=>{const x=latestFor(r.id);if(x){acc.covered++;acc.lldp+=x.t0_lldp+x.t1_lldp;acc.intf+=x.t0_interface+x.t1_interface;acc.opt+=x.t0_optics+x.t1_optics;acc.ber+=x.t0_ber+x.t1_ber;}return acc;},{covered:0,lldp:0,intf:0,opt:0,ber:0});
+  $('openCount').textContent=totals.lldp+totals.intf+totals.opt+totals.ber;
+  $('progress').textContent=totals.covered;
+  $('completed').textContent='—';
+  $('lldpCount').textContent=totals.lldp;$('interfaceCount').textContent=totals.intf;$('opticsCount').textContent=totals.opt;$('serviceCount').textContent='—';
   $('search').placeholder='搜索 DG 或 Rack Number...';
   const cards=$('blockCards');cards.replaceChildren();
   for(const [dg,items] of grouped){
@@ -54,32 +61,40 @@ function renderRacks(){
     const strong=document.createElement('strong');strong.textContent=dg;
     const dot=document.createElement('span');dot.className='dot';top.append(strong,dot);
     const state=document.createElement('div');state.className='blockstate';state.textContent=selectedArea;
-    const count=document.createElement('div');count.className='blockcount';count.textContent=items.length;
-    const note=document.createElement('div');note.className='blocknote';note.textContent=items.length+' racks';
+    const count=document.createElement('div');count.className='blockcount';const errors=items.reduce((n,r)=>n+errorTotal(latestFor(r.id)),0);count.textContent=errors+' errors';
+    const note=document.createElement('div');note.className='blocknote';note.textContent=items.length+' racks · '+items.filter(r=>latestFor(r.id)).length+' with report';
     const foot=document.createElement('div');foot.className='blockfoot';foot.textContent='查看 Rack →';
     card.append(top,state,count,note,foot);card.onclick=()=>showRacks(dg,items);cards.append(card);
   }
   if(!cards.childElementCount){const p=document.createElement('p');p.className='muted';p.textContent='没有找到匹配的 DG / Rack。';cards.append(p);}
-  showMessage('message',list.length+' 个 Rack 已从 Supabase 读取。错误统计尚未接入 Formatter。');
+  showMessage('message',list.length+' 个 Rack 已从 Supabase 读取；'+totals.covered+' 个 Rack 有已导入的错误快照。未覆盖 Rack 显示为未报告。');
 }
 function showRacks(dg,items){
-  $('blockDetailTitle').textContent=selectedArea+' · '+dg+' · '+items.length+' Racks';
+  $('blockDetailTitle').textContent=selectedArea+' · '+dg+' · errors by rack';
   const wrap=$('blockDetailItems');wrap.replaceChildren();
-  if(!items.length){const p=document.createElement('p');p.textContent='当前 DG 没有 Rack';wrap.append(p);}
+  const summary=document.createElement('p');summary.className='muted';summary.textContent=items.length+' racks · T0 / T1 errors · 最新导入记录';wrap.append(summary);
   for(const r of items){
-    const line=document.createElement('div');line.className='detailitem';
-    const name=document.createElement('strong');name.textContent=r.rack_number;line.append(name);
+    const snap=latestFor(r.id),prev=previousFor(r.id);const line=document.createElement('div');line.className='rack-error';
+    const name=document.createElement('strong');name.textContent='Rack '+r.rack_number;
+    const total=document.createElement('span');total.className='errcount';total.textContent=snap?String(errorTotal(snap)):'—';
+    line.append(name,total);
+    const breakdown=document.createElement('div');breakdown.className='errline';
+    breakdown.textContent=snap?'T0: I '+snap.t0_interface+' · L '+snap.t0_lldp+' · O '+snap.t0_optics+' · B '+snap.t0_ber+' | T1: I '+snap.t1_interface+' · L '+snap.t1_lldp+' · O '+snap.t1_optics+' · B '+snap.t1_ber:'尚未导入该 Rack 的错误记录';line.append(breakdown);
+    if(snap&&prev){const trend=document.createElement('span');trend.className='delta';const d=errorTotal(snap)-errorTotal(prev);trend.textContent='与上次相比 '+(d>0?'+':'')+d+' errors';line.append(trend);}
     if(role==='admin'){
-      const b=document.createElement('button');b.className='small danger';b.textContent='停用';
-      b.onclick=async()=>{
-        if(!confirm('确定停用 '+selectedArea+' / '+dg+' / '+r.rack_number+'？历史数据不会删除。'))return;
-        b.disabled=true;const {error}=await db.from('racks').update({active:false}).eq('id',r.id);
-        if(error){alert('停用失败：'+error.message);b.disabled=false;return;}
-        $('blockDetail').close();await loadRacks();
-      };line.append(b);
+      const b=document.createElement('button');b.className='small danger';b.textContent='停用 Rack';
+      b.onclick=async()=>{if(!confirm('确定停用 '+selectedArea+' / '+dg+' / '+r.rack_number+'？历史数据不会删除。'))return;b.disabled=true;const {error}=await db.from('racks').update({active:false}).eq('id',r.id);if(error){alert('停用失败：'+error.message);b.disabled=false;return;}$('blockDetail').close();await loadRacks();};line.append(b);
     }wrap.append(line);
   }$('blockDetail').showModal();
 }
+function errorTotal(x){return x?['t0_interface','t0_lldp','t0_optics','t0_ber','t1_interface','t1_lldp','t1_optics','t1_ber'].reduce((n,k)=>n+Number(x[k]||0),0):0;}
+function latestFor(id){return snapshots.find(x=>x.rack_id===id)||null;}
+function previousFor(id){let found=false;for(const x of snapshots){if(x.rack_id!==id)continue;if(found)return x;found=true;}return null;}
+async function loadSnapshots(){
+  const all=[];let from=0;while(true){const {data,error}=await db.from('rack_error_snapshots').select('*').order('created_at',{ascending:false}).order('id',{ascending:false}).range(from,from+499);if(error){showMessage('message','读取错误历史失败：'+error.message,true);return;}all.push(...(data||[]));if(!data||data.length<500)break;from+=500;}
+  snapshots=all;render();
+}
+
 async function loadRacks(){
   // Supabase 默认每次最多返回 1000 条，分页避免未来增加 Rack 时遗漏
   const all=[];let from=0;const pageSize=500;
@@ -100,16 +115,68 @@ $('addRack').addEventListener('click',async()=>{
   $('rackNumber').value='';showMessage('rackMessage','Rack 已保存');await loadRacks();
 });
 function showBlock(block,items){$('blockDetailTitle').textContent=block.toUpperCase()+' · Details';const wrap=$('blockDetailItems');wrap.replaceChildren();for(const t of items){const item=document.createElement('div');item.className='detailitem';const info=document.createElement('div');const title=document.createElement('strong');title.textContent=t.ticket_no+' · '+t.title;const sub=document.createElement('p');sub.className='muted';sub.textContent=(t.status||'')+' · '+(t.owner||'未分配')+' · '+(t.details||'');info.append(title,sub);item.append(info);if(['admin','editor'].includes(role)){const b=document.createElement('button');b.textContent='编辑';b.className='small';b.onclick=()=>{$('blockDetail').close();openEditor(t)};item.append(b)}wrap.append(item)}$('blockDetail').showModal()}
-document.querySelectorAll('[data-page]').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('[data-page]').forEach(x=>x.classList.toggle('selected',x===b));for(const page of ['dashboard','checklist','formatter'])$(page+'Page').classList.toggle('hidden',b.dataset.page!==page)}));document.querySelectorAll('[data-area]').forEach(b=>b.addEventListener('click',()=>{selectedArea=b.dataset.area;$('search').value='';document.querySelectorAll('[data-area]').forEach(x=>x.classList.toggle('selected',x===b));render()}));$('formatFile').addEventListener('change',e=>{$('formatResult').textContent=e.target.files[0]?'已选择：'+e.target.files[0].name+'。CSV 导入数据库尚未启用。':'尚未选择文件'});
+document.querySelectorAll('[data-page]').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('[data-page]').forEach(x=>x.classList.toggle('selected',x===b));for(const page of ['dashboard','checklist','formatter'])$(page+'Page').classList.toggle('hidden',b.dataset.page!==page)}));document.querySelectorAll('[data-area]').forEach(b=>b.addEventListener('click',()=>{selectedArea=b.dataset.area;$('search').value='';document.querySelectorAll('[data-area]').forEach(x=>x.classList.toggle('selected',x===b));render()}));$('formatFile').addEventListener('change',async e=>{const file=e.target.files[0];pendingImport=null;$('commitFormat').disabled=true;$('formatPreview').replaceChildren();if(!file){$('formatResult').textContent='尚未选择文件';return;}try{await previewValidation(file);}catch(err){showMessage('formatResult','读取失败：'+err.message,true);}});
+$('clearPreview').onclick=()=>{$('formatFile').value='';pendingImport=null;$('formatPreview').replaceChildren();$('formatResult').textContent='尚未选择文件';$('commitFormat').disabled=true;};
+$('commitFormat').onclick=commitValidation;
+
 async function loadTickets(){const {data,error}=await db.from('work_orders').select('id,ticket_no,title,block_name,category,owner,status,details,created_at').order('created_at',{ascending:false});if(error){showMessage('message','读取工单失败：'+error.message,true);return;}tickets=data||[];showMessage('message','');render();}
-async function openDashboard(sessionUser){user=sessionUser;$('login').classList.add('hidden');$('dashboard').classList.remove('hidden');$('userbar').classList.remove('hidden');$('who').textContent=user.email;const {data,error}=await db.from('profiles').select('role,active').eq('id',user.id).single();if(error||!data?.active){showMessage('message','账号未启用或没有 profiles 权限，请联系管理员。',true);role='viewer';$('add').classList.add('hidden');return;}role=data.role;$('add').classList.toggle('hidden',!['admin','editor'].includes(role));await loadTickets();await loadRacks();if(rackChannel)await db.removeChannel(rackChannel);rackChannel=db.channel('forcewin-racks').on('postgres_changes',{event:'*',schema:'public',table:'racks'},()=>loadRacks()).subscribe();if(channel)await db.removeChannel(channel);channel=db.channel('forcewin-work-orders').on('postgres_changes',{event:'*',schema:'public',table:'work_orders'},()=>loadTickets()).subscribe();}
+async function openDashboard(sessionUser){user=sessionUser;$('login').classList.add('hidden');$('dashboard').classList.remove('hidden');$('userbar').classList.remove('hidden');$('who').textContent=user.email;const {data,error}=await db.from('profiles').select('role,active').eq('id',user.id).single();if(error||!data?.active){showMessage('message','账号未启用或没有 profiles 权限，请联系管理员。',true);role='viewer';$('add').classList.add('hidden');return;}role=data.role;$('add').classList.toggle('hidden',!['admin','editor'].includes(role));await loadTickets();await loadRacks();await loadSnapshots();if(snapshotChannel)await db.removeChannel(snapshotChannel);snapshotChannel=db.channel('forcewin-rack-snapshots').on('postgres_changes',{event:'INSERT',schema:'public',table:'rack_error_snapshots'},()=>loadSnapshots()).subscribe();if(rackChannel)await db.removeChannel(rackChannel);rackChannel=db.channel('forcewin-racks').on('postgres_changes',{event:'*',schema:'public',table:'racks'},()=>loadRacks()).subscribe();if(channel)await db.removeChannel(channel);channel=db.channel('forcewin-work-orders').on('postgres_changes',{event:'*',schema:'public',table:'work_orders'},()=>loadTickets()).subscribe();}
 $('loginForm').addEventListener('submit',async e=>{e.preventDefault();$('loginBtn').disabled=true;showMessage('loginMessage','正在登录...');const {data,error}=await db.auth.signInWithPassword({email:$('email').value.trim(),password:$('password').value});$('loginBtn').disabled=false;if(error){showMessage('loginMessage','登录失败：'+error.message,true);return;}await openDashboard(data.user);});
-$('logout').addEventListener('click',async()=>{if(channel){await db.removeChannel(channel);channel=null;}if(rackChannel){await db.removeChannel(rackChannel);rackChannel=null;}await db.auth.signOut();user=null;tickets=[];racks=[];$('dashboard').classList.add('hidden');$('userbar').classList.add('hidden');$('login').classList.remove('hidden');$('password').value='';});
-$('search').addEventListener('input',render);$('refresh').addEventListener('click',async()=>{await loadTickets();await loadRacks();});
+$('logout').addEventListener('click',async()=>{if(channel){await db.removeChannel(channel);channel=null;}if(rackChannel){await db.removeChannel(rackChannel);rackChannel=null;}if(snapshotChannel){await db.removeChannel(snapshotChannel);snapshotChannel=null;}pendingImport=null;snapshots=[];await db.auth.signOut();user=null;tickets=[];racks=[];$('dashboard').classList.add('hidden');$('userbar').classList.add('hidden');$('login').classList.remove('hidden');$('password').value='';});
+$('search').addEventListener('input',render);$('refresh').addEventListener('click',async()=>{await loadTickets();await loadRacks();await loadSnapshots();});
 function openEditor(t=null){editingId=t?.id??null;$('editorTitle').textContent=t?'编辑工单':'新增工单';$('ticketForm').reset();for(const id of ['ticket_no','title','block_name','category','owner','status','details']){if(t)$(id).value=t[id]??'';}if(!t){$('block_name').value='MFAB';$('category').value='Validation';$('status').value='处理中';}$('formMessage').textContent='';$('editor').showModal();}
 $('add').addEventListener('click',()=>openEditor());$('cancel').addEventListener('click',()=>$('editor').close());
 $('ticketForm').addEventListener('submit',async e=>{e.preventDefault();if(!['admin','editor'].includes(role))return;const payload={};for(const id of ['ticket_no','title','block_name','category','owner','status','details'])payload[id]=$(id).value.trim();$('saveTicket').disabled=true;const result=editingId?await db.from('work_orders').update(payload).eq('id',editingId):await db.from('work_orders').insert({...payload,created_by:user.id});$('saveTicket').disabled=false;if(result.error){$('formMessage').textContent='保存失败：'+result.error.message;return;}$('editor').close();await loadTickets();});
 (async()=>{if(SUPABASE_KEY.startsWith('PASTE_')){showMessage('loginMessage','请先在代码中填写 Supabase Publishable Key。',true);return;}const {data}=await db.auth.getUser();if(data.user)await openDashboard(data.user);})();
+
+// Formatter: read real report sheet headers; never infer zero for racks not covered.
+const ERR_FIELDS=['t0_interface','t0_lldp','t0_optics','t0_ber','t1_interface','t1_lldp','t1_optics','t1_ber'];
+const REPORT_SHEETS=['T0_Interface','T0_LLDP','T0_Optics','T0_BER','T1_Interface','T1_LLDP','T1_Optics','T1_BER'];
+function locationRack(value){const s=String(value??'').trim();const m=s.match(/(?:^|:)\s*(\d{4})\s*(?::\d+)?$/);return m?m[1]:null;}
+function rowLocation(row,keys){for(const key of keys){if(row[key]){const rack=locationRack(row[key]);if(rack)return rack;}}return null;}
+async function previewValidation(file){
+ if(!window.XLSX)throw Error('Excel 解析库未加载，请检查网络后刷新页面。');
+ if(!racks.length)throw Error('尚未读取到 Supabase racks。请确认登录和 Rack 读取权限。');
+ $('formatResult').textContent='正在解析 '+file.name+' ...';
+ const buf=await file.arrayBuffer();const workbook=XLSX.read(buf,{type:'array',raw:false});
+ const available=REPORT_SHEETS.filter(n=>workbook.SheetNames.includes(n));
+ if(available.length===0)throw Error('没有找到 T0_/T1_ Interface、LLDP、Optics 或 BER 工作表。请使用 Validation 原始报告。');
+ const lookup=new Map(racks.filter(r=>r.area==='QFAD'&&r.active!==false).map(r=>[r.rack_number,r]));
+ if(!lookup.size)throw Error('QFAD racks 未加载，请检查数据库。');
+ const summary=new Map(),unmatched=[],stats={rows:0,matched:0,unmatched:0,skipped:0};
+ for(const name of available){const sheet=workbook.Sheets[name];const rows=XLSX.utils.sheet_to_json(sheet,{defval:'',raw:false});const [tier,category]=name.toLowerCase().split('_');const field=tier+'_'+category;
+  for(let i=0;i<rows.length;i++){const row=rows[i];if(!Object.values(row).some(x=>String(x).trim()))continue;stats.rows++;
+   const source=rowLocation(row,['Source Device Location','Device A Location']);
+   const fallback=rowLocation(row,['Remote Device Location','Expected B Location']);
+   let target=source&&lookup.get(source);
+   if(!target&&tier==='t1'&&fallback)target=lookup.get(fallback);
+   if(!target){stats.unmatched++;if(unmatched.length<25)unmatched.push(name+' row '+(i+2)+': '+(source||'无 Source')+' / '+(fallback||'无 Remote/Expected'));continue;}
+   if(!summary.has(target.id)){const counts={rack_id:target.id,area:target.area,dg:target.dg,rack_number:target.rack_number};for(const f of ERR_FIELDS)counts[f]=0;summary.set(target.id,counts);}
+   summary.get(target.id)[field]++;stats.matched++;
+  }
+ }
+ const entries=[...summary.values()].sort((a,b)=>a.dg.localeCompare(b.dg)||a.rack_number.localeCompare(b.rack_number));
+ pendingImport={fileName:file.name,entries,stats,available,unmatched};
+ $('formatResult').textContent='QFAD · '+available.length+' 工作表 · '+stats.rows+' 条错误 · 匹配 '+stats.matched+' 条 · 未匹配 '+stats.unmatched+' 条。仅保存有匹配错误的 Rack。';
+ const wrap=$('formatPreview');wrap.replaceChildren();const table=document.createElement('table');table.id='previewTable';
+ const thead=document.createElement('thead'),tr=document.createElement('tr');for(const title of ['DG','Rack','T0 I','T0 L','T0 O','T0 B','T1 I','T1 L','T1 O','T1 B','总计']){const th=document.createElement('th');th.textContent=title;tr.append(th);}thead.append(tr);table.append(thead);
+ const body=document.createElement('tbody');for(const entry of entries){const r=document.createElement('tr');for(const val of [entry.dg,entry.rack_number,...ERR_FIELDS.map(k=>entry[k]),errorTotal(entry)]){const td=document.createElement('td');td.textContent=val;r.append(td);}body.append(r);}table.append(body);wrap.append(table);
+ if(unmatched.length){const p=document.createElement('p');p.className='notice';p.textContent='未匹配记录示例（不会写入）：'+unmatched.join(' | ');wrap.append(p);}
+ if(available.length!==REPORT_SHEETS.length){const p=document.createElement('p');p.className='notice error';p.textContent='警告：缺少工作表 '+REPORT_SHEETS.filter(x=>!available.includes(x)).join(', ')+'；无法视为完整报告。';wrap.append(p);}
+ $('commitFormat').disabled=!entries.length||!['admin','editor'].includes(role);
+ if(!['admin','editor'].includes(role)){$('formatResult').textContent+=' 当前账号没有上传权限。';}
+}
+async function commitValidation(){
+ if(!pendingImport||!['admin','editor'].includes(role))return;
+ const item=pendingImport;if(!confirm('确定写入 QFAD 的 '+item.entries.length+' 个 Rack 错误快照？未匹配的 '+item.stats.unmatched+' 条将跳过；不会清零其他 Rack。'))return;
+ $('commitFormat').disabled=true;showMessage('formatResult','正在保存上传记录...');
+ const {data:record,error:firstError}=await db.from('validation_imports').insert({area:'QFAD',filename:item.fileName,imported_by:user.id}).select('id').single();
+ if(firstError){showMessage('formatResult','创建上传记录失败：'+firstError.message,true);$('commitFormat').disabled=false;return;}
+ const payload=item.entries.map(e=>{const x={import_id:record.id,rack_id:e.rack_id};for(const f of ERR_FIELDS)x[f]=e[f];return x;});
+ for(let i=0;i<payload.length;i+=200){const {error}=await db.from('rack_error_snapshots').insert(payload.slice(i,i+200));if(error){showMessage('formatResult','错误快照保存失败：'+error.message+'。上传记录 ID：'+record.id+'。请勿重复点击上传，先检查数据库中的部分数据。',true);return;}}
+ pendingImport=null;showMessage('formatResult','保存成功：QFAD '+payload.length+' 个 Rack 的错误快照已写入 Supabase。');await loadSnapshots();
+}
+
 </script>
 </body>
 </html>
