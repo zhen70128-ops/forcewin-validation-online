@@ -5,6 +5,16 @@
 <title>FORCEWIN Validation</title>
 <style>
 :root{font-family:Arial,'Microsoft YaHei',sans-serif;color:#e6edf7;background:#090e18}*{box-sizing:border-box}body{margin:0}button,input,select,textarea{font:inherit}button{cursor:pointer;border:0;border-radius:7px;padding:11px 15px;background:#1769c2;color:white}button:disabled{opacity:.55;cursor:wait}.secondary{background:#25354c}.danger{background:#a43d4c}header{background:#101a2b;border-bottom:1px solid #263850;padding:18px 5%;display:flex;justify-content:space-between;align-items:center;gap:10px}header strong{font-size:22px}main{max-width:1180px;margin:32px auto;padding:0 18px}.panel{background:#121e30;border:1px solid #2a3c54;border-radius:12px;padding:22px;margin-bottom:20px}.login{max-width:440px;margin:10vh auto}h1,h2{margin:0 0 20px}h1{font-size:26px}h2{font-size:19px}label{display:block;margin:12px 0 6px;color:#bac9df;font-size:14px}input,select,textarea{width:100%;padding:12px;border:1px solid #40516a;border-radius:7px;background:#0b1422;color:#fff}textarea{min-height:110px}form button{margin-top:16px}.muted{color:#a9bad1}.hidden{display:none!important}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}.stat{background:#15253a;padding:20px;border-radius:10px}.stat b{display:block;font-size:30px;margin-top:9px}.toolbar{display:flex;gap:10px;align-items:center;margin-bottom:15px}.toolbar input{flex:1}.tablewrap{overflow:auto}table{width:100%;border-collapse:collapse;min-width:760px}th,td{text-align:left;padding:13px;border-bottom:1px solid #2b3b50}th{color:#aabbd0}tr:hover td{background:#18283e}.small{padding:7px 10px;font-size:13px}.actions{display:flex;gap:7px}.notice{margin:12px 0;color:#eebd6d}.error{color:#ff8d9c}.ok{color:#87d9ae}.formgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:0 14px}.full{grid-column:1/-1}dialog{background:#121e30;color:#e6edf7;border:1px solid #40516a;border-radius:12px;width:min(650px,94vw);max-height:90vh;overflow:auto;padding:25px}dialog::backdrop{background:#000a}.dialogactions{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}@media(max-width:700px){.stats{grid-template-columns:repeat(2,1fr)}.formgrid{grid-template-columns:1fr}.toolbar{flex-wrap:wrap}header strong{font-size:17px}}
+
+/* Validation status trend cards */
+.metricgrid{grid-template-columns:repeat(8,minmax(0,1fr))}
+.metric{min-height:92px;padding:13px 7px}
+.metric .metric-delta{display:block;font:700 12px Arial;margin-top:5px;white-space:nowrap}
+.metric-delta.up{color:#ff626e}.metric-delta.down{color:#34d399}.metric-delta.flat{color:#c5b7d9}.metric-delta.na{color:#a99abc}
+.metric .metric-caption{display:block;font:9px monospace;margin-top:5px;color:#b7a7d1}
+@media(max-width:1100px){.metricgrid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media(max-width:650px){.metricgrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.blockstate.service-label{color:#51e4ac;font-weight:800;letter-spacing:.09em}.blockcard:has(.service-label) .dot{background:#51e4ac;box-shadow:0 0 0 4px rgba(81,228,172,.12)}
 </style>
 <style>
 body{background:#030405;color:#f3f5f8}header{background:#050505;border-bottom:1px solid #292929;padding:19px 3.5%}header strong{font-size:30px;letter-spacing:-1px}main{max-width:1500px;margin:0 auto;padding:10px 3.4%}.panel{background:#101113;border-color:#303034}.tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:0 0 24px;padding:10px 0 22px;border-bottom:1px solid #252525}.tabs button{background:#1c1c1f;border:1px solid #2b2b2f;border-radius:13px;padding:19px 12px;font-weight:600}.tabs button.selected{background:#1685f9;border-color:#1685f9;box-shadow:0 4px 15px #006fff33}.eyebrow{color:#1685ff;font:700 11px monospace;letter-spacing:2px;margin:24px 0}h1{font-size:24px}.metricgrid{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:10px;margin:32px 0 18px}.metric{background:#1c1c1e;border:1px solid #303034;border-radius:12px;padding:15px 9px;text-align:center;font:10px monospace;min-height:83px;color:#9fa7b5}.metric b{display:block;font:700 26px Arial;color:white;margin:8px 0 0}.toolbar{margin:18px 0}.toolbar input{background:#1d1d1f;border-color:#2e2e32}.blockgrid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px;margin:22px 0 34px}.blockcard{text-align:left;display:flex;flex-direction:column;gap:13px;min-height:225px;background:#1b1b1e;border:1px solid #2b2b30;border-radius:13px;padding:17px;color:#f5f5f5}.blockcard:hover,.blockcard:focus{border-color:#1685ff;outline:none}.blocktop{display:flex;justify-content:space-between;align-items:center;font:12px monospace}.dot{width:9px;height:9px;border-radius:50%;background:#27d966}.blockstate{color:#a3a7b5;font:10px monospace;letter-spacing:1px}.blockcount{font-size:24px;font-weight:700}.progressline{height:5px;background:#175899;border-radius:5px;overflow:hidden}.progressline span{display:block;height:100%;background:#1685ff}.blocknote{font:11px monospace;color:#a7afbd}.blockfoot{color:#27d966;font:12px monospace;margin-top:auto}.uploadbox{background:#1c1c1e;padding:32px;border-radius:12px;min-height:200px}.detailitem{border-bottom:1px solid #303038;padding:14px 0;display:flex;align-items:center;justify-content:space-between;gap:16px}.detailitem p{font-size:12px;overflow-wrap:anywhere}.dialoghead{display:flex;justify-content:space-between;align-items:center}dialog{background:#101113;border-color:#303034}input,textarea,select{background:#12151c}@media(max-width:1100px){.metricgrid{grid-template-columns:repeat(4,1fr)}.blockgrid{grid-template-columns:repeat(3,1fr)}}@media(max-width:650px){.blockgrid{grid-template-columns:repeat(2,1fr)}.metricgrid{grid-template-columns:repeat(2,1fr)}.tabs{gap:6px}.tabs button{padding:13px 3px;font-size:12px}header strong{font-size:20px}}
@@ -82,7 +92,7 @@ let selectedArea='QFAD';
 // Display label is independent of the stored Supabase area key.
 function displayArea(area){return area==='QFAD'?'QFAB T0-T1':area;}
 function normalizeArea(area){return area==='QFAB T0-T1'?'QFAD':area;}
-function renderTickets(){$('search').placeholder='Filter by BLOCK number or status...';const q=$('search').value.toLowerCase().trim();const areaTickets=tickets.filter(t=>selectedArea==='CFAB/MFAB'?(!/qfab/i.test(t.category||'')):String(t.category||'').toUpperCase().includes(selectedArea==='QFAD'?'QFAB':'TO-HOST'));const filtered=areaTickets.filter(t=>[t.ticket_no,t.title,t.owner,t.block_name,t.category,t.status].some(v=>String(v??'').toLowerCase().includes(q)));const groups=new Map();for(const t of filtered){const key=t.block_name||'UNASSIGNED';if(!groups.has(key))groups.set(key,[]);groups.get(key).push(t)}$('blocksCount').textContent=groups.size;$('openCount').textContent=areaTickets.filter(t=>t.status!=='已完成').length;$('progress').textContent=areaTickets.filter(t=>t.status==='处理中').length;$('completed').textContent=areaTickets.filter(t=>t.status==='已完成').length;$('areaTitle').textContent=displayArea(selectedArea)+' · Validations Status';const cards=$('blockCards');cards.replaceChildren();for(const [block,items] of [...groups.entries()].sort((a,b)=>a[0].localeCompare(b[0],undefined,{numeric:true}))){const open=items.filter(t=>t.status!=='已完成').length,done=items.length-open;const card=document.createElement('button');card.className='blockcard';const top=document.createElement('div');top.className='blocktop';const name=document.createElement('strong');name.textContent=block.toUpperCase().startsWith('BLOCK')?block.toUpperCase():'BLOCK '+block;const dot=document.createElement('span');dot.className='dot';top.append(name,dot);const state=document.createElement('div');state.className='blockstate';state.textContent=open?'IN PROGRESS':'<5 CLEARED';const count=document.createElement('div');count.className='blockcount';count.textContent=open;const line=document.createElement('div');line.className='progressline';const fill=document.createElement('span');fill.style.width=(items.length?done/items.length*100:0)+'%';line.append(fill);const note=document.createElement('div');note.className='blocknote';note.textContent=items.length+' tickets · '+done+' cleared';const foot=document.createElement('div');foot.className='blockfoot';foot.textContent=open?'active':'ready';card.append(top,state,count,line,note,foot);card.addEventListener('click',()=>showBlock(block,items));cards.append(card)}if(!groups.size){const empty=document.createElement('p');empty.className='muted';empty.textContent='No block data. Click + New Work Order and enter a block (e.g. BLOCK 05).';cards.append(empty)}const tbody=$('rows');tbody.replaceChildren();for(const t of filtered){const tr=document.createElement('tr');for(const field of ['ticket_no','title','block_name','category','owner','status']){const td=document.createElement('td');td.textContent=field==='status'?({'待处理':'Pending','处理中':'In Progress','已完成':'Completed','暂停':'On Hold'}[t[field]]||t[field]||''):(t[field]??'');tr.append(td)}const td=document.createElement('td');if(['admin','editor'].includes(role)){const btn=document.createElement('button');btn.className='small secondary';btn.textContent='Edit';btn.addEventListener('click',()=>openEditor(t));td.append(btn)}tr.append(td);tbody.append(tr)}if(!filtered.length){const tr=document.createElement('tr');const td=document.createElement('td');td.colSpan=7;td.textContent='No work orders';tr.append(td);tbody.append(tr)}}
+function renderTickets(){clearTrends();$('search').placeholder='Filter by BLOCK number or status...';const q=$('search').value.toLowerCase().trim();const areaTickets=tickets.filter(t=>selectedArea==='CFAB/MFAB'?(!/qfab/i.test(t.category||'')):String(t.category||'').toUpperCase().includes(selectedArea==='QFAD'?'QFAB':'TO-HOST'));const filtered=areaTickets.filter(t=>[t.ticket_no,t.title,t.owner,t.block_name,t.category,t.status].some(v=>String(v??'').toLowerCase().includes(q)));const groups=new Map();for(const t of filtered){const key=t.block_name||'UNASSIGNED';if(!groups.has(key))groups.set(key,[]);groups.get(key).push(t)}$('blocksCount').textContent=groups.size;$('openCount').textContent=areaTickets.filter(t=>t.status!=='已完成').length;$('progress').textContent=areaTickets.filter(t=>t.status==='处理中').length;$('completed').textContent=areaTickets.filter(t=>t.status==='已完成').length;$('areaTitle').textContent=displayArea(selectedArea)+' · Validations Status';const cards=$('blockCards');cards.replaceChildren();for(const [block,items] of [...groups.entries()].sort((a,b)=>a[0].localeCompare(b[0],undefined,{numeric:true}))){const open=items.filter(t=>t.status!=='已完成').length,done=items.length-open;const card=document.createElement('button');card.className='blockcard';const top=document.createElement('div');top.className='blocktop';const name=document.createElement('strong');name.textContent=block.toUpperCase().startsWith('BLOCK')?block.toUpperCase():'BLOCK '+block;const dot=document.createElement('span');dot.className='dot';top.append(name,dot);const state=document.createElement('div');state.className='blockstate';state.textContent=open?'IN PROGRESS':'<5 CLEARED';const count=document.createElement('div');count.className='blockcount';count.textContent=open;const line=document.createElement('div');line.className='progressline';const fill=document.createElement('span');fill.style.width=(items.length?done/items.length*100:0)+'%';line.append(fill);const note=document.createElement('div');note.className='blocknote';note.textContent=items.length+' tickets · '+done+' cleared';const foot=document.createElement('div');foot.className='blockfoot';foot.textContent=open?'active':'ready';card.append(top,state,count,line,note,foot);card.addEventListener('click',()=>showBlock(block,items));cards.append(card)}if(!groups.size){const empty=document.createElement('p');empty.className='muted';empty.textContent='No block data. Click + New Work Order and enter a block (e.g. BLOCK 05).';cards.append(empty)}const tbody=$('rows');tbody.replaceChildren();for(const t of filtered){const tr=document.createElement('tr');for(const field of ['ticket_no','title','block_name','category','owner','status']){const td=document.createElement('td');td.textContent=field==='status'?({'待处理':'Pending','处理中':'In Progress','已完成':'Completed','暂停':'On Hold'}[t[field]]||t[field]||''):(t[field]??'');tr.append(td)}const td=document.createElement('td');if(['admin','editor'].includes(role)){const btn=document.createElement('button');btn.className='small secondary';btn.textContent='Edit';btn.addEventListener('click',()=>openEditor(t));td.append(btn)}tr.append(td);tbody.append(tr)}if(!filtered.length){const tr=document.createElement('tr');const td=document.createElement('td');td.colSpan=7;td.textContent='No work orders';tr.append(td);tbody.append(tr)}}
 function isRackArea(){return selectedArea==='QFAD'||selectedArea==='T0-HOPS';}
 function render(){
   $('rackTools').classList.toggle('hidden',!isRackArea()||role!=='admin');
@@ -90,6 +100,26 @@ function render(){
   document.querySelector('#dashboardPage .panel:last-child').classList.toggle('hidden',isRackArea());
   if(isRackArea()) renderRacks(); else renderTickets();
 }
+// Compare the latest two saved snapshots of each rack. Only racks with both
+// snapshots participate in the delta; a missing report is never treated as zero.
+function metricDelta(metric, current, previous, hasComparison){
+  let el=document.getElementById('trend-'+metric);
+  if(!el){el=document.createElement('span');el.id='trend-'+metric;el.className='metric-delta';const number=document.getElementById(metric);if(number)number.after(el);}
+  if(!hasComparison){el.className='metric-delta na';el.textContent='NEW / NO HISTORY';return;}
+  const d=current-previous;
+  el.className='metric-delta '+(d>0?'up':d<0?'down':'flat');
+  el.textContent=d>0?'▲ +'+d:d<0?'▼ '+Math.abs(d):'— 0';
+}
+function setTrendCaption(metric,text){
+  let el=document.getElementById('caption-'+metric);
+  if(!el){el=document.createElement('span');el.id='caption-'+metric;el.className='metric-caption';document.getElementById(metric)?.after(el);}
+  el.textContent=text;
+}
+function clearTrends(){
+  document.querySelectorAll('.metric-delta,.metric-caption').forEach(el=>el.remove());
+}
+// Display-only service labels for the requested DGs. No database status is changed.
+function isMarkedInService(area,dg){return (area==='QFAD'||area==='T0-HOPS')&&(dg==='DG5'||dg==='DG6');}
 function renderRacks(){
   const list=racks.filter(r=>r.area===selectedArea&&r.active!==false);
   const q=$('search').value.trim().toLowerCase();
@@ -101,7 +131,32 @@ function renderRacks(){
   $('openCount').textContent=totals.lldp+totals.intf+totals.opt+totals.ber;
   $('progress').textContent=totals.covered;
   $('completed').textContent='—';
-  $('lldpCount').textContent=totals.lldp;$('interfaceCount').textContent=totals.intf;$('opticsCount').textContent=totals.opt;$('serviceCount').textContent='—';
+  $('lldpCount').textContent=totals.lldp;$('interfaceCount').textContent=totals.intf;$('opticsCount').textContent=totals.opt;$('serviceCount').textContent=['DG5','DG6'].filter(dg=>grouped.has(dg)&&isMarkedInService(selectedArea,dg)).length;
+  // Totals and change are calculated from the same comparable rack set.
+  // First-time imports have no previous snapshot and are excluded from the
+  // comparison rather than producing a misleading rise from zero.
+  const compare={current:{all:0,lldp:0,intf:0,opt:0,ber:0},previous:{all:0,lldp:0,intf:0,opt:0,ber:0},paired:0};
+  for(const r of list){
+    const a=latestFor(r.id),b=previousFor(r.id);
+    if(!a||!b)continue;
+    compare.paired++;
+    for(const [key,cols] of Object.entries({
+      all:['t0_interface','t1_interface','t0_lldp','t1_lldp','t0_optics','t1_optics','t0_ber','t1_ber'],
+      lldp:['t0_lldp','t1_lldp'],intf:['t0_interface','t1_interface'],
+      opt:['t0_optics','t1_optics'],ber:['t0_ber','t1_ber']})){
+      compare.current[key]+=cols.reduce((n,k)=>n+Number(a[k]||0),0);
+      compare.previous[key]+=cols.reduce((n,k)=>n+Number(b[k]||0),0);
+    }
+  }
+  for(const [id,key] of Object.entries({openCount:'all',lldpCount:'lldp',interfaceCount:'intf',opticsCount:'opt'})){
+    metricDelta(id,compare.current[key],compare.previous[key],compare.paired>0);
+    setTrendCaption(id,compare.paired+' racks compared');
+  }
+  // The other cards do not have a meaningful historical error count.
+  for(const id of ['blocksCount','progress','completed','serviceCount']){
+    document.getElementById('trend-'+id)?.remove();
+    document.getElementById('caption-'+id)?.remove();
+  }
   $('search').placeholder='Search DG or Rack Number...';
   const cards=$('blockCards');cards.replaceChildren();
   for(const [dg,items] of grouped){
@@ -111,14 +166,15 @@ function renderRacks(){
     const top=document.createElement('div');top.className='blocktop';
     const strong=document.createElement('strong');strong.textContent=dg;
     const dot=document.createElement('span');dot.className='dot';top.append(strong,dot);
-    const state=document.createElement('div');state.className='blockstate';state.textContent=selectedArea;
+    const state=document.createElement('div');state.className='blockstate';state.textContent=isMarkedInService(selectedArea,dg)?'IN SERVICE':displayArea(selectedArea);
+    if(isMarkedInService(selectedArea,dg))state.classList.add('service-label');
     const count=document.createElement('div');count.className='blockcount';const errors=items.reduce((n,r)=>n+errorTotal(latestFor(r.id)),0);count.textContent=errors+' errors';
     const note=document.createElement('div');note.className='blocknote';note.textContent=items.length+' racks · '+items.filter(r=>latestFor(r.id)).length+' with report';
     const foot=document.createElement('div');foot.className='blockfoot';foot.textContent='View Racks →';
     card.append(top,state,count,note,foot);card.onclick=()=>showRacks(dg,items);cards.append(card);
   }
   if(!cards.childElementCount){const p=document.createElement('p');p.className='muted';p.textContent='No matching DG / Rack found.';cards.append(p);}
-  showMessage('message',list.length+' racks loaded from Supabase; '+totals.covered+' racks have imported error snapshots. Uncovered racks are shown as Not Reported.');
+  showMessage('message',list.length+' racks loaded from Supabase; '+totals.covered+' racks reported; '+compare.paired+' racks have two snapshots for trend comparison. Missing reports are not counted as zero.');
 }
 function showRacks(dg,items){
   $('blockDetailTitle').textContent=selectedArea+' · '+dg+' · errors by rack';
@@ -131,7 +187,7 @@ function showRacks(dg,items){
     line.append(name,total);
     const breakdown=document.createElement('div');breakdown.className='errline';
     breakdown.textContent=snap?'T0: I '+snap.t0_interface+' · L '+snap.t0_lldp+' · O '+snap.t0_optics+' · B '+snap.t0_ber+' | T1: I '+snap.t1_interface+' · L '+snap.t1_lldp+' · O '+snap.t1_optics+' · B '+snap.t1_ber:'No error report imported for this rack';line.append(breakdown);
-    if(snap&&prev){const trend=document.createElement('span');trend.className='delta';const d=errorTotal(snap)-errorTotal(prev);trend.textContent='Change since previous import: '+(d>0?'+':'')+d+' errors';line.append(trend);}
+    if(snap&&prev){const trend=document.createElement('span');trend.className='delta';const d=errorTotal(snap)-errorTotal(prev);trend.className='delta metric-delta '+(d>0?'up':d<0?'down':'flat');trend.textContent='Since previous rack report: '+(d>0?'▲ +'+d:d<0?'▼ '+Math.abs(d):'— 0')+' errors';line.append(trend);}
     if(role==='admin'){
       const b=document.createElement('button');b.className='small danger';b.textContent='Deactivate Rack';
       b.onclick=async()=>{if(!confirm('Deactivate '+selectedArea+' / '+dg+' / '+r.rack_number+'? Historical data will be retained.'))return;b.disabled=true;const {error}=await db.from('racks').update({active:false}).eq('id',r.id);if(error){alert('Deactivation failed: '+error.message);b.disabled=false;return;}$('blockDetail').close();await loadRacks();};line.append(b);
